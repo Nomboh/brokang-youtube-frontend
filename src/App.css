@@ -1,0 +1,16 @@
+
+.containerCustom{
+  @apply container mx-auto max-w-7xl
+}
+
+.section{
+  @apply mt-6 w-full 800px:mt-14
+}
+
+.normalFlex{
+  @apply flex items-center
+}
+
+.normalFlexResponsive{ 
+  @apply flex items-center flex-col 800px:flex-row
+}

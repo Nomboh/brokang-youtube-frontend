@@ -1,16 +1,33 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { createProductApi } from "./createProductApi"
+import { createProduct, editProduct } from "./createProductApi"
 import toast from "react-hot-toast"
 
 export const useCreateProduct = () => {
-	const queryclient = useQueryClient()
-	const { mutate: createProduct, isLoading: isCreating } = useMutation({
-		mutationFn: (data) => createProductApi(data),
+	const queryClient = useQueryClient()
+	const { mutate: createAProduct, isLoading: isCreating } = useMutation({
+		mutationFn: (data) => createProduct(data),
 		onSuccess: () => {
-			toast.success("product created successfull")
-			queryclient.invalidateQueries({ queryKey: ["get-all-products"] })
+			toast.success("Product created successfully")
+			queryClient.invalidateQueries({
+				queryKey: ["get-all-products"],
+			})
 		},
 	})
 
-	return { createProduct, isCreating }
+	return { createAProduct, isCreating }
+}
+
+export const useEditProduct = () => {
+	const queryClient = useQueryClient()
+	const { mutate: editAProduct, isLoading: isEditing } = useMutation({
+		mutationFn: (data) => editProduct(data),
+		onSuccess: (data) => {
+			toast.success("Product Edited successfully")
+			queryClient.refetchQueries({
+				queryKey: ["product", data?._id],
+			})
+		},
+	})
+
+	return { editAProduct, isEditing }
 }

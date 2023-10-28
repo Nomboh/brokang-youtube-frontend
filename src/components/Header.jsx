@@ -16,13 +16,13 @@ function Header({ user }) {
 			{/* nav up bar */}
 			<div className="navbar bg-base-100">
 				{/* logo */}
-				<div className="flex-1">
+				<Link to={"/"} className="flex-1">
 					<img
 						src="https://res.cloudinary.com/queentech/image/upload/v1692021184/profile/brokang1_1_zmaurb.svg"
 						alt="logo"
 						className="w-20 h-20"
 					/>
-				</div>
+				</Link>
 				<div className="flex-none gap-8">
 					{/* notification */}
 					<div className="dropdown dropdown-end">
@@ -131,9 +131,9 @@ function Header({ user }) {
 						/>
 					</div>
 				</div>
-				<div className="navbar-end w-1/3">
-					<a className="btn btn-neutral">Sell your Items</a>
-				</div>
+				<Link to={"/sell"} className="navbar-end w-1/3">
+					<button className="btn btn-neutral">Sell your Items</button>
+				</Link>
 			</div>
 		</div>
 	)

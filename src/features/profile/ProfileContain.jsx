@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { FiCamera } from "react-icons/fi"
 import { useUpdateMe, useUpdatePassword } from "./profile"
+import { cloudinaryUpload } from "../../utils/cloudinaryUpload"
 
 function ProfileContain({ user }) {
 	const [openPassword, setOpenPassword] = useState(false)
@@ -36,6 +37,38 @@ function ProfileContain({ user }) {
 			currentPassword,
 		})
 	}
+
+	const handleProfileUpload = async (e) => {
+		e.preventDefault()
+
+		const files = e.target.files
+		const uploadImages = await cloudinaryUpload({
+			files: [files[0]],
+			uploadPreset: "profile",
+			width: 300,
+			height: 300,
+		})
+
+		updateMe({
+			photo: uploadImages[0].url,
+		})
+	}
+
+	const handleBannerUpload = async (e) => {
+		e.preventDefault()
+
+		const files = e.target.files
+		const uploadImages = await cloudinaryUpload({
+			files: [files[0]],
+			uploadPreset: "profile",
+			width: 300,
+			height: 970,
+		})
+
+		updateMe({
+			bannerImage: uploadImages[0].url,
+		})
+	}
 	return (
 		<div>
 			<div className=" h-52 800px:h-64 relative w-full">
@@ -47,7 +80,7 @@ function ProfileContain({ user }) {
 					/>
 				</label>
 				<input
-					onChange={() => {}}
+					onChange={handleBannerUpload}
 					className="hidden"
 					type="file"
 					name="banner"
@@ -70,7 +103,7 @@ function ProfileContain({ user }) {
 						type="file"
 						name="profile_image"
 						id="profile_image"
-						onChange={() => {}}
+						onChange={handleProfileUpload}
 					/>
 				</div>
 			</div>

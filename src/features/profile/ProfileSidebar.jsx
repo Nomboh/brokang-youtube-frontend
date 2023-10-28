@@ -1,6 +1,7 @@
 import React from "react"
 import { BsStarFill } from "react-icons/bs"
 import { Link } from "react-router-dom"
+import LongSting from "../../components/LongSting"
 
 function ProfileSidebar({ user }) {
 	return (
@@ -49,7 +50,7 @@ function ProfileSidebar({ user }) {
 			</div>
 			<br />
 			{user?.introduction ? (
-				<p className="font-light w-full text-left">{user.introduction}</p>
+				<LongSting maxLength={10} text={user?.introduction} />
 			) : (
 				<p className=" font-light w-full text-left ">
 					Write an introduction for this store

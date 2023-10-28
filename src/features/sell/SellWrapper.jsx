@@ -5,7 +5,7 @@ import { FaChevronRight } from "react-icons/fa"
 import { Link } from "react-router-dom"
 import SellImages from "./SellImages"
 import { useForm } from "react-hook-form"
-import { useCreateProduct } from "./createProduct"
+import { useCreateProduct, useEditProduct } from "./createProduct"
 
 const statusData = [
 	{
@@ -24,10 +24,10 @@ const statusData = [
 	},
 ]
 
-function SellWrapper() {
+function SellWrapper({ product }) {
 	const [tag, setTag] = useState()
 	const [tags, setTags] = useState([])
-	const [conditionState, setConditionState] = useState()
+	const [conditionState, setConditionState] = useState("")
 
 	const {
 		register,
@@ -38,18 +38,31 @@ function SellWrapper() {
 		formState: { errors, isValid, isDirty, isSubmitSuccessful },
 	} = useForm({
 		mode: "onTouched",
-		defaultValues: {
-			images: [],
-			title: "",
-			category: "",
-			originalPrice: 0,
-			brand: "no brand",
-			condition: "",
-			description: "",
-			tags: [],
-			size: "",
-			shippingFee: 0,
-		},
+		defaultValues: product
+			? {
+					images: product.images,
+					title: product.title,
+					category: product.category,
+					originalPrice: product.originalPrice,
+					brand: product.brand,
+					condition: product.condition,
+					tags: product.tags,
+					size: product.size,
+					description: product.description,
+					shippingFee: product.shippingFee,
+			  }
+			: {
+					images: [],
+					title: "",
+					category: "",
+					originalPrice: 0,
+					brand: "no brand",
+					condition: "",
+					tags: [],
+					size: "",
+					description: "",
+					shippingFee: 0,
+			  },
 	})
 
 	const handleTagDelete = (e, tag) => {
@@ -61,9 +74,28 @@ function SellWrapper() {
 	}
 
 	const handleAddTag = () => {
-		if (tags.length < 5) {
-			setTags((prev) => [...prev, tag])
-			setTag("")
+		setTags((prev) => [...prev, tag])
+		setTag("")
+	}
+
+	const category = watch("category")
+	const watchedImages = watch("images")
+	const watchTags = watch("tags")
+	const condition = watch("condition")
+
+	const { isCreating, createAProduct } = useCreateProduct()
+	const { editAProduct, isEditing } = useEditProduct()
+
+	const onSubmit = (data) => {
+		if (product) {
+			editAProduct({
+				...data,
+				productId: product._id,
+			})
+
+			window.location.reload()
+		} else {
+			createAProduct(data)
 		}
 	}
 
@@ -73,14 +105,6 @@ function SellWrapper() {
 		}
 	}, [isSubmitSuccessful])
 
-	const { createProduct, isCreating } = useCreateProduct()
-
-	const onSubmit = (data) => {
-		createProduct(data)
-	}
-
-	const category = watch("category")
-	const images = watch("images")
 	return (
 		<div className="section w-full px-2">
 			<div className="flex text-left items-center justify-between ">
@@ -99,11 +123,16 @@ function SellWrapper() {
 						<span className="text-red-400">*</span> Product Images
 						<p>
 							{" "}
-							<span className="text-accent ml-4">{images?.length}</span> / 12
+							<span className="text-accent ml-4">{watchedImages.length}</span> /
+							12
 						</p>
 					</div>
 					<div className=" flex-1 w-full 800px:w-5/6">
-						<SellImages register={register} setValue={setValue} />
+						<SellImages
+							watchedImages={watchedImages}
+							register={register}
+							setValue={setValue}
+						/>
 						<p className={`text-red-500 text-left `}>
 							{errors.images?.message}
 						</p>
@@ -123,7 +152,7 @@ function SellWrapper() {
 							placeholder="Your product title"
 							className="input input-bordered w-full "
 							{...register("title", {
-								required: "Title is required",
+								required: "title is required",
 							})}
 						/>
 						<p className="text-red-500 text-left">{errors.title?.message}</p>
@@ -176,7 +205,7 @@ function SellWrapper() {
 
 				{/* Product Size */}
 				{(category === "shoes" || category === "clothes") && (
-					<>
+					<div>
 						<div className="flex items-start flex-col gap-2 800px:flex-row ">
 							<div className="800px:w-1/6 w-full text-left">Product Size</div>
 
@@ -190,7 +219,7 @@ function SellWrapper() {
 							</div>
 						</div>
 						<div className="divider my-8"></div>
-					</>
+					</div>
 				)}
 
 				{/* Product Condition */}
@@ -213,19 +242,19 @@ function SellWrapper() {
 										setConditionState(sd.value)
 										setValue("condition", sd.value)
 									}}
-									className={`py-3 px-4 border-2 rounded-md border-base-200 cursor-pointer ${
-										conditionState === sd.value ? " bg-black/50 text-white" : ""
-									}`}>
+									className={`${
+										condition === sd.value ? " text-white bg-black/50 " : ""
+									} py-3 px-4 border-2 rounded-md border-base-200 cursor-pointer`}>
 									{sd.name}
 									<input
 										type="radio"
 										id={sd.value}
-										value={sd.value}
+										value={condition}
 										{...register("condition", {
 											required: "condition is required",
 										})}
-										checked={conditionState === sd.value}
 										hidden
+										checked={condition === sd.value}
 									/>
 								</label>
 							))}
@@ -249,12 +278,12 @@ function SellWrapper() {
 							placeholder="Enter the price of the product"
 							className="input flex input-bordered w-full max-w-sm "
 							{...register("originalPrice", {
-								required: "price is required",
+								required: "Price is required",
+								valueAsNumber: true,
 								min: {
 									value: 1,
-									message: "price can not be less than 1",
+									message: "Price can not be less than 1",
 								},
-								valueAsNumber: true,
 							})}
 						/>
 						<p className="text-red-500 text-left">
@@ -289,9 +318,9 @@ function SellWrapper() {
 							</div>
 						</div>
 
-						{tags && (
+						{watchTags && (
 							<div className="mb-4 gap-4 flex items-center">
-								{tags.map((tag, i) => (
+								{watchTags.map((tag, i) => (
 									<label
 										htmlFor={`tag-${i}`}
 										key={i}
@@ -303,14 +332,13 @@ function SellWrapper() {
 											className=" text-gray-300 cursor-pointer"
 											onClick={(e) => handleTagDelete(e, tag)}
 										/>
-
 										<input
 											type="checkbox"
 											id={`tag-${i}`}
-											value={tag}
 											checked={true}
-											{...register("tags")}
+											value={tag}
 											hidden
+											{...register("tags")}
 										/>
 									</label>
 								))}
@@ -366,17 +394,17 @@ function SellWrapper() {
 							placeholder="Enter the shipping Fee of the product"
 							className="input flex input-bordered w-full max-w-sm "
 							{...register("shippingFee", {
-								required: "shipping fee is required",
+								required: "shippingFee is required",
 								max: {
 									value: 100,
-									message: "Shipping fee can not be more than 100$",
+									message: "shipping fee can not be more than 100$",
 								},
 								valueAsNumber: true,
 								validate: {
-									shippingValidate: (value) => {
+									shippingValidation: (value) => {
 										return value >= 5 || value === 0
 											? true
-											: "shipping fee most be greater than 5$"
+											: "Shipping fee most be greater than 5$"
 									},
 								},
 							})}
@@ -405,12 +433,21 @@ function SellWrapper() {
 
 					<div className=" w-full 800px:w-5/6">
 						<div className=" mb-4 flex gap-4 items-center justify-center">
-							<input
-								disabled={!isDirty || !isValid || isCreating}
-								type="submit"
-								value={"Registration Complete"}
-								className={`btn btn-active btn-accent`}
-							/>
+							{product ? (
+								<input
+									disabled={isEditing}
+									type="submit"
+									value={"Complete Editing"}
+									className={`btn btn-active btn-accent`}
+								/>
+							) : (
+								<input
+									disabled={!isDirty || !isValid || isCreating}
+									type="submit"
+									value={"Registration Complete"}
+									className={`btn btn-active btn-accent`}
+								/>
+							)}
 
 							<Link to={"/"}>
 								<button className="btn btn-active btn-neutral ">

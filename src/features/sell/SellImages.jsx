@@ -1,76 +1,44 @@
 import { FiCamera } from "react-icons/fi"
 import { AiFillCloseCircle } from "react-icons/ai"
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
+import { Droppable, Draggable, DragDropContext } from "react-beautiful-dnd"
 import { useState } from "react"
 import Dropzone from "react-dropzone"
-import { Cloudinary } from "@cloudinary/url-gen"
-import { Resize } from "@cloudinary/url-gen/actions"
-import { useMutation } from "@tanstack/react-query"
 import agent from "../../app/agent"
+import { useMutation } from "@tanstack/react-query"
 import toast from "react-hot-toast"
+import { cloudinaryUpload } from "../../utils/cloudinaryUpload"
 
-const SellImages = ({ register, setValue }) => {
-	const cld = new Cloudinary({
-		cloud: {
-			cloudName: "queentech",
-		},
-	})
-
+const SellImages = ({ register, setValue, watchedImages }) => {
 	const [images, setImages] = useState([])
 
-	const dragEnd = (data) => {
+	const onDragEnd = (data) => {
 		const { destination, source } = data
 
 		if (!destination) return
 
-		const newImgArray = [...images]
-		const removedImg = newImgArray.splice(source.index, 1)
-		newImgArray.splice(destination.index, 0, removedImg[0])
-		setImages(newImgArray)
+		const newImages = [...watchedImages]
+		const removedImg = newImages.splice(source.index, 1)
+		newImages.splice(destination.index, 0, removedImg[0])
 		setValue(
 			"images",
-			newImgArray.map((img) => img.url)
+			newImages.map((img) => img)
 		)
 	}
 
 	const onDrop = async (files) => {
-		const newImages = files.map((file) => {
-			const formData = new FormData()
-			formData.append("file", file)
-			formData.append("upload_preset", "uploads")
-			return { formData }
+		const imgObj = await cloudinaryUpload({
+			files,
+			uploadPreset: "uploads",
+			width: 500,
+			height: 500,
 		})
 
-		const imagObj = await Promise.all(
-			newImages.map(async (img) => {
-				const response = await fetch(
-					"https://api.cloudinary.com/v1_1/queentech/image/upload",
-					{
-						method: "POST",
-						body: img.formData,
-					}
-				)
-
-				const data = await response.json()
-
-				return {
-					publicId: data.public_id,
-					url: cld
-						.image(data.public_id)
-						.resize(Resize.scale().width(500).height(500))
-						.quality("auto")
-						.format("auto")
-						.toURL(),
-				}
-			})
-		)
-
-		setImages((prev) => [...prev, ...imagObj])
+		setValue("images", [...watchedImages, ...imgObj])
 	}
 
 	const deleteImg = async (publicId) => {
 		try {
-			return await agent.Product.deleteCloudinaryImg({ publicId })
+			return await agent.Product.deleteImages({ publicId })
 		} catch (error) {
 			throw error
 		}
@@ -78,19 +46,19 @@ const SellImages = ({ register, setValue }) => {
 
 	const { mutate } = useMutation({
 		mutationFn: (publicId) => deleteImg(publicId),
-
 		onSuccess: (data) => {
-			console.log(data)
 			toast.success(data.message)
 		},
 	})
 
-	const handleImageDelete = (e, publicId) => {
+	const handleImageDelete = (e, image) => {
 		e.preventDefault()
+
+		const splitimg = image.split("/v1")[1]
+		const publicId = splitimg.split("?")[0]
 		mutate(publicId, {
 			onSuccess: () => {
-				const filterImages = images.filter((img) => img.publicId !== publicId)
-
+				const filterImages = watchedImages.filter((img) => img !== image)
 				setImages(filterImages)
 				setValue("images", filterImages)
 			},
@@ -107,22 +75,28 @@ const SellImages = ({ register, setValue }) => {
 								className=" h-36 w-36 cursor-pointer flex border-2 border-dashed border-base-300 items-center justify-center flex-col rounded-md">
 								<FiCamera className=" text-slate-400" size={50} />
 								{isDragActive ? (
-									<p className=" text-slate-200 text-center">
-										You can drop item here
+									<p className=" text-secondary-content text-center">
+										You can drop images here
 									</p>
 								) : (
 									<p className=" text-slate-400 text-center">
-										Add Images or drop here
+										Add images or drop here
 									</p>
 								)}
 							</label>
-							<input {...getInputProps()} multiple type="file" id="images" />
+							<input
+								className="hidden"
+								{...getInputProps()}
+								multiple
+								type="file"
+								id="images"
+							/>
 						</div>
 					)}
 				</Dropzone>
-				<DragDropContext onDragEnd={dragEnd}>
+				<DragDropContext onDragEnd={onDragEnd}>
 					<ImageWrapper
-						images={images}
+						images={watchedImages}
 						register={register}
 						handleImageDelete={handleImageDelete}
 					/>
@@ -150,8 +124,8 @@ const ImageWrapper = ({ images, register, handleImageDelete }) => {
 					ref={provided.innerRef}
 					className=" w-full flex items-center flex-wrap gap-2 p-2">
 					<ImagesItems
-						register={register}
 						images={images}
+						register={register}
 						handleImageDelete={handleImageDelete}
 					/>
 					{provided.placeholder}
@@ -164,50 +138,53 @@ const ImageWrapper = ({ images, register, handleImageDelete }) => {
 const ImagesItems = ({ images, register, handleImageDelete }) => {
 	return (
 		<>
-			{images?.map((item, index) => (
-				<Draggable index={index} key={index} draggableId={`image-${index}`}>
-					{(provided, snapshot) => (
-						<div
-							ref={provided.innerRef}
-							{...provided.dragHandleProps}
-							{...provided.draggableProps}
-							className={`w-28 h-28 800px:w-36 800px:h-36 relative border-2 rounded-md border-base-300 ${
-								snapshot.isDragging ? " border-primary border-4" : ""
-							}`}>
-							<img
-								className="h-full w-full rounded-md"
-								src={item.url}
-								alt={item.url}
-							/>
-
-							<label htmlFor={`image-${index}`}>
-								<AiFillCloseCircle
-									className="absolute top-1 cursor-pointer right-1"
-									size={30}
-									onClick={(e) => handleImageDelete(e, item.publicId)}
+			{images &&
+				images?.map((item, index) => (
+					<Draggable draggableId={`image-${index}`} index={index}>
+						{(provided, snapshot) => (
+							<div
+								{...provided.dragHandleProps}
+								{...provided.draggableProps}
+								ref={provided.innerRef}
+								key={index}
+								className={`${
+									snapshot.isDragging ? " border-primary border-4" : ""
+								} w-28 h-28 800px:w-36 800px:h-36 relative border-2 rounded-md border-base-300`}>
+								<img
+									className="h-full w-full rounded-md"
+									src={item}
+									alt={index + "uploaded images"}
 								/>
 
-								<input
-									id={`image-${index}`}
-									value={item.url}
-									type="checkbox"
-									checked={true}
-									{...register("images", {
-										required: "images is required",
-									})}
-									hidden
-								/>
-							</label>
+								<label htmlFor={`image-${index}`}>
+									<AiFillCloseCircle
+										className="absolute top-1 cursor-pointer right-1"
+										size={30}
+										onClick={(e) => handleImageDelete(e, item)}
+									/>
 
-							{index === 0 && (
-								<div className=" p-2 w-2/3 absolute top-1/2 right-1/2 left-1/2 -translate-x-1/2 bottom-0 badge badge-primary ">
-									Main Image
-								</div>
-							)}
-						</div>
-					)}
-				</Draggable>
-			))}
+									<input
+										type="checkbox"
+										id={`image-${index}`}
+										checked={true}
+										value={item}
+										{...register("images", {
+											required: "Atleast on image is required",
+										})}
+										hidden
+									/>
+								</label>
+
+								{index === 0 && (
+									<div className=" badge p-2 w-2/3 absolute top-1/2 right-1/2 left-1/2 -translate-x-1/2 bottom-0 badge-primary">
+										{" "}
+										Main Image
+									</div>
+								)}
+							</div>
+						)}
+					</Draggable>
+				))}
 		</>
 	)
 }

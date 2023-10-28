@@ -60,18 +60,27 @@ const Account = {
 
 const Product = {
 	getAllProducts: (params) => request.get("/product", params),
-	detailProducts: (id) => request.get(`/product/${id}`),
-	getSellerOtherPdt: (id) => request.get(`/product/sellerOtherProducts/${id}`),
-	getRecommendedPdt: (category) =>
-		request.get(`/product/${category}/recommendedProducts`),
+	getProductsDetails: (id) => request.get(`/product/${id}`),
+	getOtherSellerItems: (userId) =>
+		request.get(`product/seller-other-items/${userId}`),
+	getRecommendedProducts: (category, params) =>
+		request.get(`/product/recommended/${category}`, params),
 
-	deleteCloudinaryImg: (data) => request.post("/product/deleteImage", data),
+	deleteImages: (data) => request.post("/product/deleteImage", data),
 	createProduct: (data) => request.post("/product", data),
+	editProduct: (data) => request.put(`/product/${data?.productId}`, data),
+}
+
+const Like = {
+	likeProducts: (productId) => request.post(`/like/${productId}`),
+	unlikeProducts: (productId) => request.post(`/like/unlike/${productId}`),
+	getUserLikes: () => request.get(`/like`),
 }
 
 const agent = {
 	Account,
 	Product,
+	Like,
 }
 
 export default agent

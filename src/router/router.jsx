@@ -6,10 +6,11 @@ import Register from "../features/register/Register"
 import ActivationPage from "../features/activation/ActivationPage"
 import ForgotPassword from "../features/forgotPassword/ForgotPassword.jsx"
 import ResetPassword from "../features/resetPassword/ResetPassword"
-import ProductDetail from "../features/productDetails/ProductDetail.jsx"
 import ProfilePage from "../features/profile/ProfilePage"
-import SellPage from "../features/sell/SellPage.jsx"
 import ProtectedRoutes from "./ProtectedRoutes"
+import ProductDetails from "../features/productDetails/productDetails"
+import SellProducts from "../features/sell/SellProducts"
+import EditProducts from "../features/sell/EditProducts"
 
 const router = createBrowserRouter([
 	{
@@ -23,9 +24,15 @@ const router = createBrowserRouter([
 						element: <ProfilePage />,
 						path: "/profile",
 					},
+
 					{
-						element: <SellPage />,
+						element: <SellProducts />,
 						path: "/sell",
+					},
+
+					{
+						element: <EditProducts />,
+						path: "/edit-product",
 					},
 				],
 			},
@@ -58,7 +65,7 @@ const router = createBrowserRouter([
 			},
 
 			{
-				element: <ProductDetail />,
+				element: <ProductDetails />,
 				path: "/:id",
 			},
 		],

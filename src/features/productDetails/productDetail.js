@@ -1,34 +1,37 @@
 import { useQuery } from "@tanstack/react-query"
 import {
-	getOtherSellerPdt,
-	getRecommendedPdt,
-	productDetails,
-} from "./productDetailApi"
+	getRecommendedProducts,
+	productDetail,
+	sellerOtherItems,
+} from "./productDetailsApi"
 
-export const useProductDetail = (id) => {
+export const useProduct = (id) => {
 	const { data: product, isLoading } = useQuery({
-		queryFn: () => productDetails(id),
+		queryFn: () => productDetail(id),
 		queryKey: ["product", id],
 	})
 
 	return { product, isLoading }
 }
 
-export const useOtherSellers = (id) => {
-	const { data: sellersProducts, isLoading } = useQuery({
-		queryFn: () => getOtherSellerPdt(id),
-		queryKey: ["product-other-sellers", id],
-		enabled: !!id,
+export const useSellerProducts = (userId, productId) => {
+	const { data: sellerProducts, isLoading } = useQuery({
+		queryFn: () => sellerOtherItems(userId),
+		queryKey: ["seller-products", userId, productId],
+		enabled: !!userId,
+		select: (data) => data.filter((product) => product._id !== productId),
 	})
 
-	return { sellersProducts, isLoading }
+	return { sellerProducts, isLoading }
 }
-export const useRecommended = (category) => {
-	const { data: recommendedProducts, isLoading } = useQuery({
-		queryFn: () => getRecommendedPdt(category),
-		queryKey: ["product-recommended", category],
-		enabled: !!category,
+
+export const useRecommended = (category, productId, userId) => {
+	const { data: recommenedProducts, isLoading } = useQuery({
+		queryFn: () => getRecommendedProducts(category, userId),
+		queryKey: ["recommended-products", category, productId, userId],
+		enabled: !!category && !!userId,
+		select: (data) => data.filter((product) => product._id !== productId),
 	})
 
-	return { recommendedProducts, isLoading }
+	return { recommenedProducts, isLoading }
 }

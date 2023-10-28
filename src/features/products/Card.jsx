@@ -1,10 +1,21 @@
-import React from "react"
+import React, { useState } from "react"
 import { BsFillHeartFill, BsHeart } from "react-icons/bs"
 import { format } from "timeago.js"
 import { Link } from "react-router-dom"
+import { useLike, useUnlike } from "../../app/hooks/like"
 
 function Card({ product }) {
-	const isLiked = false
+	const isLiked = true
+
+	const { likeAProduct } = useLike(product?._id)
+	const { unlikeAProduct } = useUnlike(product?._id)
+
+	const likes = JSON.parse(localStorage.getItem("likes"))
+	const isProductLiked = likes.some((lk) => lk.product === product?._id)
+
+	console.log(isProductLiked)
+
+	const [isLike, setIslike] = useState(isProductLiked)
 	return (
 		<Link to={`/${product._id}`}>
 			<div className="card  bg-base-100 shadow-xl">
@@ -14,13 +25,23 @@ function Card({ product }) {
 						alt="Shoes"
 						className="h-56 w-full object-cover"
 					/>
-					{isLiked ? (
+					{isLike ? (
 						<BsFillHeartFill
+							onClick={(e) => {
+								e.preventDefault()
+								setIslike(!isLike)
+								unlikeAProduct(product?._id)
+							}}
 							size={25}
 							className="absolute top-3 right-3 cursor-pointer text-red-500 z-50"
 						/>
 					) : (
 						<BsHeart
+							onClick={(e) => {
+								e.preventDefault()
+								setIslike(!isLike)
+								likeAProduct(product?._id)
+							}}
 							size={25}
 							className="absolute top-3 right-3 cursor-pointer text-gray-500 z-50"
 						/>

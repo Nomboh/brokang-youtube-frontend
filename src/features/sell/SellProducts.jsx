@@ -1,10 +1,10 @@
 import React from "react"
 import Header from "../../components/Header"
-import SellWrapper from "./SellWrapper.jsx"
 import Footer from "../../components/Footer"
 import { useOutletContext } from "react-router-dom"
+import SellWrapper from "./SellWrapper"
 
-function SellPage() {
+function SellProducts() {
 	const { user } = useOutletContext()
 	return (
 		<div>
@@ -15,4 +15,4 @@ function SellPage() {
 	)
 }
 
-export default SellPage
+export default SellProducts

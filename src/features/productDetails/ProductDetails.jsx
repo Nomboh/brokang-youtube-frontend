@@ -3,7 +3,7 @@ import Header from "../../components/Header"
 import Footer from "../../components/Footer"
 import { useUser } from "../../app/hooks/loadUser"
 import { useProduct, useRecommended, useSellerProducts } from "./productDetail"
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import ProductImages from "./ProductImages"
 import {
 	BsChatDots,
@@ -216,12 +216,13 @@ function ProductDetails() {
 						<div className=" flex flex-wrap gap-2">
 							{product?.tags &&
 								product?.tags.map((tag) => (
-									<div
+									<Link
+										to={`/search?tag=${tag}`}
 										key={tag}
 										className=" badge cursor-pointer badge-outline h-8 rounded-lg">
 										{" "}
 										#{tag}
-									</div>
+									</Link>
 								))}
 						</div>
 					</div>

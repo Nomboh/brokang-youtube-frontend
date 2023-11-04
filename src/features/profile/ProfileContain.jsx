@@ -50,7 +50,7 @@ function ProfileContain({ user }) {
 		})
 
 		updateMe({
-			photo: uploadImages[0].url,
+			photo: uploadImages[0],
 		})
 	}
 
@@ -66,7 +66,7 @@ function ProfileContain({ user }) {
 		})
 
 		updateMe({
-			bannerImage: uploadImages[0].url,
+			bannerImage: uploadImages[0],
 		})
 	}
 	return (

@@ -11,6 +11,7 @@ import ProtectedRoutes from "./ProtectedRoutes"
 import ProductDetails from "../features/productDetails/productDetails"
 import SellProducts from "../features/sell/SellProducts"
 import EditProducts from "../features/sell/EditProducts"
+import Search from "../features/search/Search.jsx"
 
 const router = createBrowserRouter([
 	{
@@ -67,6 +68,11 @@ const router = createBrowserRouter([
 			{
 				element: <ProductDetails />,
 				path: "/:id",
+			},
+
+			{
+				element: <Search />,
+				path: "/search",
 			},
 		],
 	},

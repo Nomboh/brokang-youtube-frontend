@@ -2,11 +2,14 @@ import React from "react"
 import { IoMdNotificationsOutline } from "react-icons/io"
 import { BsChatDots } from "react-icons/bs"
 import { BiSearch } from "react-icons/bi"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useLogout } from "../app/hooks/logoutUser"
 
 function Header({ user }) {
 	const { logout } = useLogout()
+	const [q, setQ] = React.useState("")
+	const navigate = useNavigate()
+
 	const handleLogout = (e) => {
 		e.preventDefault()
 		logout()
@@ -123,13 +126,20 @@ function Header({ user }) {
 					<a className="btn btn-accent normal-case text-xl">All Categories</a>
 				</div>
 				<div className="navbar-center flex-1 hidden lg:flex">
-					<div className="relative w-full">
-						<input className="input w-full input-bordered rounded-full" />
+					<form className="relative w-full">
+						<input
+							className="input w-full input-bordered rounded-full"
+							onChange={(e) => setQ(e.target.value)}
+						/>
+
 						<BiSearch
 							className="text-gray-400 absolute top-3 right-3"
 							size={25}
+							onClick={() => {
+								navigate(`/search?q=${q}`)
+							}}
 						/>
-					</div>
+					</form>
 				</div>
 				<Link to={"/sell"} className="navbar-end w-1/3">
 					<button className="btn btn-neutral">Sell your Items</button>

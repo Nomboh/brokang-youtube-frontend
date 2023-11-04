@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { productCategories } from "../../utils/productCategories"
 import { MdOutlineClose } from "react-icons/md"
 import { FaChevronRight } from "react-icons/fa"
-import { Link } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import SellImages from "./SellImages"
 import { useForm } from "react-hook-form"
 import { useCreateProduct, useEditProduct } from "./createProduct"
@@ -26,8 +26,7 @@ const statusData = [
 
 function SellWrapper({ product }) {
 	const [tag, setTag] = useState()
-	const [tags, setTags] = useState([])
-	const [conditionState, setConditionState] = useState("")
+	const navigate = useNavigate()
 
 	const {
 		register,
@@ -68,13 +67,13 @@ function SellWrapper({ product }) {
 	const handleTagDelete = (e, tag) => {
 		e.preventDefault()
 
-		const filteredTags = tags.filter((tg) => tg !== tag)
+		const filteredTags = watchTags.filter((tg) => tg !== tag)
 		setValue("tags", filteredTags)
-		setTags(filteredTags)
 	}
 
 	const handleAddTag = () => {
-		setTags((prev) => [...prev, tag])
+		setValue("tags", [...watchTags, tag])
+
 		setTag("")
 	}
 
@@ -93,7 +92,7 @@ function SellWrapper({ product }) {
 				productId: product._id,
 			})
 
-			window.location.reload()
+			navigate(`/${product?._id}`)
 		} else {
 			createAProduct(data)
 		}
@@ -239,7 +238,6 @@ function SellWrapper({ product }) {
 									key={sd.value}
 									onClick={(e) => {
 										e.preventDefault()
-										setConditionState(sd.value)
 										setValue("condition", sd.value)
 									}}
 									className={`${

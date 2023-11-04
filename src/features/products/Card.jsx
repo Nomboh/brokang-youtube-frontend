@@ -4,20 +4,16 @@ import { format } from "timeago.js"
 import { Link } from "react-router-dom"
 import { useLike, useUnlike } from "../../app/hooks/like"
 
-function Card({ product }) {
-	const isLiked = true
-
+function Card({ product, lastElementRef }) {
 	const { likeAProduct } = useLike(product?._id)
 	const { unlikeAProduct } = useUnlike(product?._id)
 
 	const likes = JSON.parse(localStorage.getItem("likes"))
 	const isProductLiked = likes.some((lk) => lk.product === product?._id)
 
-	console.log(isProductLiked)
-
 	const [isLike, setIslike] = useState(isProductLiked)
 	return (
-		<Link to={`/${product._id}`}>
+		<Link ref={lastElementRef} to={`/${product._id}`}>
 			<div className="card  bg-base-100 shadow-xl">
 				<figure className="relative">
 					<img

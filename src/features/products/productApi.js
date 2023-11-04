@@ -4,7 +4,33 @@ export const getAllProducts = async (pageNumber, filterData) => {
 	const params = new URLSearchParams()
 
 	params.append("page", pageNumber.toString())
-	params.append("limit", "4")
+	params.append("limit", filterData.limit)
+	if (filterData?.query) params.append("title", filterData.query)
+	if (filterData?.category) params.append("category", filterData.category)
+	if (filterData?.brand) params.append("brand", filterData.brand)
+	if (filterData?.price) {
+		const { originalPrice, operator } = filterData.price
+		console.log(originalPrice, operator)
+
+		switch (operator) {
+			case "lt":
+				params.append("originalPrice[lt]", originalPrice)
+				break
+
+			case "gt":
+				params.append("originalPrice[gt]", originalPrice)
+				break
+
+			default:
+				params.append("originalPrice", originalPrice)
+				break
+		}
+	}
+
+	if (filterData?.tags) {
+		params.append("tags[in]", filterData.tags)
+	}
+
 	try {
 		return await agent.Product.getAllProducts(params)
 	} catch (error) {

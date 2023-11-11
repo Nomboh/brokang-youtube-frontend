@@ -3,7 +3,7 @@ import Header from "../../components/Header"
 import Footer from "../../components/Footer"
 import { useUser } from "../../app/hooks/loadUser"
 import { useProduct, useRecommended, useSellerProducts } from "./productDetail"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import ProductImages from "./ProductImages"
 import {
 	BsChatDots,
@@ -22,11 +22,14 @@ import RecommendedProducts from "./RecommendedProducts"
 import Spinner from "../../components/Spinner"
 import ProductBar from "./ProductBar"
 import { useLike, useUnlike } from "../../app/hooks/like"
+import { useCreateFollower, useFollowees, useUnfollow } from "../follow/follow"
+import { checkIfIsFollowing } from "../../utils/checkIfIsFollowing"
 
 const status = ["sale", "under reservation", "sold out", "hide"]
 
 function ProductDetails() {
 	const params = useParams()
+
 	const [isVisible, setIsVisible] = useState(false)
 
 	const { user } = useUser()
@@ -41,8 +44,17 @@ function ProductDetails() {
 	const { likeAProduct } = useLike(params?.id)
 	const { unlikeAProduct } = useUnlike(params?.id)
 
+	const { followees } = useFollowees()
+	const { followAUser, isFollowing: iscreating } = useCreateFollower()
+	const { isUnfollowing, unfollowAUser } = useUnfollow()
+
+	const isFollowing = checkIfIsFollowing(
+		followees?.followees,
+		product?.user._id
+	)
+
 	const likes = JSON.parse(localStorage.getItem("likes"))
-	const isProductLiked = likes.some((lk) => lk.product === params?.id)
+	const isProductLiked = likes?.some((lk) => lk.product._id === params?.id)
 
 	const [isLike, setIslike] = useState(isProductLiked)
 	const [numLikes, setNumlikes] = useState(likes?.length)
@@ -67,6 +79,21 @@ function ProductDetails() {
 
 	if (isLoading) return <Spinner />
 
+	const percentageOff = product.discountPrice
+		? ((product.originalPrice - product.discountPrice) /
+				product.originalPrice) *
+		  100
+		: 0
+
+	const handleFollow = (e) => {
+		e.preventDefault()
+		followAUser(product?.user._id)
+	}
+	const handleUnFollow = (e) => {
+		e.preventDefault()
+		unfollowAUser(product?.user._id)
+	}
+
 	return (
 		<div>
 			<Header user={user} />
@@ -79,7 +106,9 @@ function ProductDetails() {
 
 					{/* user shop */}
 					<div className=" px-2 normalFlex justify-between">
-						<div className="flex gap-2 items-center">
+						<Link
+							to={`/seller/${product?.user._id}?tab=products`}
+							className="flex gap-2 items-center">
 							<div className=" avatar">
 								<div className=" w-24 rounded-full ring-offset-base-100 ring-offset-2">
 									<img src={product?.user.photo} alt="avatar" />
@@ -98,16 +127,30 @@ function ProductDetails() {
 									))}
 								</div>
 							</div>
-						</div>
+						</Link>
 
-						<button className="btn btn-accent">Follow</button>
+						{isFollowing ? (
+							<button
+								disabled={isUnfollowing}
+								onClick={handleUnFollow}
+								className="btn btn-accent">
+								{isUnfollowing ? "Unfollowing" : "Unfollow"}
+							</button>
+						) : (
+							<button
+								onClick={handleFollow}
+								disabled={iscreating}
+								className="btn btn-accent">
+								{iscreating ? "Following" : "Follow"}
+							</button>
+						)}
 					</div>
 				</div>
 
 				{/* Right side */}
 				<div className=" h-[650px] overflow-y-scroll scrollbar-none w-full 800px:w-1/2 self-start">
 					<h2 className=" font-medium text-2xl">{product?.title}</h2>
-					<div className=" flex gap-4 items-center">
+					<div className=" flex gap-16 items-center">
 						<h1 className=" text-4xl mt-3">
 							{product?.discountPrice
 								? product?.discountPrice
@@ -116,7 +159,9 @@ function ProductDetails() {
 						</h1>
 
 						{product?.discountPrice && (
-							<h1 className="text-4xl mt-3">{product?.discountPrice}</h1>
+							<h1 className="text-4xl text-gray-500 mt-3">
+								{percentageOff !== 0 && Math.round(percentageOff)}% OFF
+							</h1>
 						)}
 					</div>
 					<div className=" flex items-center justify-between mt-1">

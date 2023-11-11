@@ -9,7 +9,7 @@ function Card({ product, lastElementRef }) {
 	const { unlikeAProduct } = useUnlike(product?._id)
 
 	const likes = JSON.parse(localStorage.getItem("likes"))
-	const isProductLiked = likes.some((lk) => lk.product === product?._id)
+	const isProductLiked = likes?.some((lk) => lk.product._id === product?._id)
 
 	const [isLike, setIslike] = useState(isProductLiked)
 	return (
@@ -29,7 +29,7 @@ function Card({ product, lastElementRef }) {
 								unlikeAProduct(product?._id)
 							}}
 							size={25}
-							className="absolute top-3 right-3 cursor-pointer text-red-500 z-50"
+							className="absolute top-3 right-3 cursor-pointer text-red-500 z-30"
 						/>
 					) : (
 						<BsHeart
@@ -39,7 +39,7 @@ function Card({ product, lastElementRef }) {
 								likeAProduct(product?._id)
 							}}
 							size={25}
-							className="absolute top-3 right-3 cursor-pointer text-gray-500 z-50"
+							className="absolute top-3 right-3 cursor-pointer text-gray-500 z-30"
 						/>
 					)}
 				</figure>

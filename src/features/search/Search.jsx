@@ -19,7 +19,15 @@ function Search() {
 
 	const { user } = useUser()
 	const { data, isFetchingNextPage, hasNextPage, isLoading, fetchNextPage } =
-		useAllProducts({ limit: "12", query: q, category, brand, price, tags: tag })
+		useAllProducts({
+			limit: "12",
+			query: q,
+			category,
+			brand,
+			price,
+			tags: tag,
+			user: user?._id,
+		})
 
 	return (
 		<div>

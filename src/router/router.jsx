@@ -12,6 +12,11 @@ import ProductDetails from "../features/productDetails/productDetails"
 import SellProducts from "../features/sell/SellProducts"
 import EditProducts from "../features/sell/EditProducts"
 import Search from "../features/search/Search.jsx"
+import MyStore from "../features/store/MyStore.jsx"
+import Follow from "../features/follow/Follow.jsx"
+import Follower from "../features/follow/Follower.jsx"
+import Following from "../features/follow/Following.jsx"
+import Seller from "../features/seller/Seller.jsx"
 
 const router = createBrowserRouter([
 	{
@@ -34,6 +39,26 @@ const router = createBrowserRouter([
 					{
 						element: <EditProducts />,
 						path: "/edit-product",
+					},
+
+					{
+						element: <MyStore />,
+						path: "/my-store",
+					},
+
+					{
+						element: <Follow />,
+						path: "/follow",
+						children: [
+							{
+								element: <Follower />,
+								path: "follower",
+							},
+							{
+								element: <Following />,
+								path: "following",
+							},
+						],
 					},
 				],
 			},
@@ -73,6 +98,11 @@ const router = createBrowserRouter([
 			{
 				element: <Search />,
 				path: "/search",
+			},
+
+			{
+				element: <Seller />,
+				path: "/seller/:id",
 			},
 		],
 	},

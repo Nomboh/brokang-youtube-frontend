@@ -56,6 +56,7 @@ const Account = {
 		request.post(`/user/resetPassword/${data.resetToken}`, data),
 	updateMe: (data) => request.put("/user/me", data),
 	updatePassword: (data) => request.put("/user/updatePassword", data),
+	getSeller: (sellerId) => request.get(`/user/${sellerId}`),
 }
 
 const Product = {
@@ -69,6 +70,7 @@ const Product = {
 	deleteImages: (data) => request.post("/product/deleteImage", data),
 	createProduct: (data) => request.post("/product", data),
 	editProduct: (data) => request.put(`/product/${data?.productId}`, data),
+	editManyProducts: (data) => request.put("/product/update/manyProducts", data),
 }
 
 const Like = {
@@ -77,10 +79,28 @@ const Like = {
 	getUserLikes: () => request.get(`/like`),
 }
 
+const Follow = {
+	followUser: (follower) => request.post(`/follow`, { follower }),
+	unfollowUser: (follower) => request.post(`/follow/unfollow/`, { follower }),
+	getUserFollowers: () => request.get(`/follow/follower`),
+	getUserFollowees: () => request.get(`/follow/followee`),
+}
+
+const Subscription = {
+	subscribe: (sellerId) => request.post(`/subscription/${sellerId}`, {}),
+	unsubscribe: (sellerId) =>
+		request.post(`/subscription/unsubscribe/${sellerId}`, {}),
+	getUserSubscriptions: (sellerId) => request.get(`/subscription/${sellerId}`),
+	checkSubscription: (sellerId) =>
+		request.get(`/subscription/check/${sellerId}`),
+}
+
 const agent = {
 	Account,
 	Product,
 	Like,
+	Follow,
+	Subscription,
 }
 
 export default agent

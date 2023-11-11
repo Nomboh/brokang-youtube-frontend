@@ -1,9 +1,45 @@
 import React from "react"
-import { BsStarFill } from "react-icons/bs"
+import { BsFillChatDotsFill, BsStarFill } from "react-icons/bs"
 import { Link } from "react-router-dom"
 import LongSting from "../../components/LongSting"
+import { useCreateFollower, useFollowees, useUnfollow } from "../follow/follow"
+import { checkIfIsFollowing } from "../../utils/checkIfIsFollowing"
+import { LuBell, LuBellRing } from "react-icons/lu"
+import {
+	useCheckSubscription,
+	useCreateSubscription,
+	useUnSubscription,
+} from "../seller/seller"
 
-function ProfileSidebar({ user }) {
+function ProfileSidebar({ user, seller }) {
+	const { followees } = useFollowees()
+	const { followAUser, isFollowing: isfollowing } = useCreateFollower()
+	const { isUnfollowing, unfollowAUser } = useUnfollow()
+
+	const { isSubscribe } = useCheckSubscription(user?._id)
+	const { createASubscription } = useCreateSubscription()
+	const { unSubscriptionToSeller } = useUnSubscription()
+
+	console.log(isSubscribe)
+
+	const isFollowing = checkIfIsFollowing(followees?.followees, user?._id)
+
+	const handleFollow = () => {
+		followAUser(user?._id)
+	}
+
+	const handleUnfollow = () => {
+		unfollowAUser(user?._id)
+	}
+
+	const handleSubscription = () => {
+		createASubscription(user?._id)
+	}
+
+	const handleUnSubscription = () => {
+		unSubscriptionToSeller(user?._id)
+	}
+
 	return (
 		<div className="flex flex-col items-center p-4">
 			<div className="avatar">
@@ -12,20 +48,63 @@ function ProfileSidebar({ user }) {
 				</div>
 			</div>
 
-			<h1 className="font-bold text-xl mb-3 mt-1">{user.name}</h1>
+			<h1 className="font-bold text-xl mb-3 mt-1">{user?.name}</h1>
 			<p className="text-slate-500">Started on monday</p>
 			<br />
 			<div className="flex flex-col gap-2 items-center w-full">
-				<Link
-					className="btn btn-primary text-white/90 rounded-full w-4/5"
-					to={"/s/follower"}>
-					Follower
-				</Link>
-				<Link
-					className="btn btn-primary text-white/90 rounded-full w-4/5"
-					to={"/s/following"}>
-					Following
-				</Link>
+				{seller ? (
+					<>
+						{isFollowing ? (
+							<div className=" w-4/5 flex items-center justify-between">
+								<button
+									disabled={isUnfollowing}
+									onClick={handleUnfollow}
+									className="btn btn-primary text-white/90 rounded-full ">
+									Un Follow
+								</button>
+
+								{isSubscribe?.success ? (
+									<button
+										onClick={handleUnSubscription}
+										className=" btn btn-primary rounded-full">
+										<LuBell size={23} />
+									</button>
+								) : (
+									<button
+										onClick={handleSubscription}
+										className=" btn btn-primary btn-outline rounded-full">
+										<LuBellRing size={23} />
+									</button>
+								)}
+							</div>
+						) : (
+							<button
+								disabled={isfollowing}
+								onClick={handleFollow}
+								className="btn btn-primary text-white/90 rounded-full w-4/5">
+								Follow
+							</button>
+						)}
+
+						<button className="btn btn-primary btn-outline rounded-full w-4/5">
+							<BsFillChatDotsFill size={23} className="mr-2" />
+							Chat
+						</button>
+					</>
+				) : (
+					<>
+						<Link
+							className="btn btn-primary text-white/90 rounded-full w-4/5"
+							to={"/follow/follower"}>
+							Follower
+						</Link>
+						<Link
+							className="btn btn-primary text-white/90 rounded-full w-4/5"
+							to={"/follow/following"}>
+							Following
+						</Link>
+					</>
+				)}
 			</div>
 			<br />
 			<br />

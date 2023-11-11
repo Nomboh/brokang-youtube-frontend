@@ -61,8 +61,8 @@ function ProfileContain({ user }) {
 		const uploadImages = await cloudinaryUpload({
 			files: [files[0]],
 			uploadPreset: "profile",
-			width: 300,
-			height: 970,
+			width: 1080,
+			height: 1920,
 		})
 
 		updateMe({

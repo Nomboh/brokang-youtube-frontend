@@ -10,7 +10,7 @@ import { useAllProducts } from "./products/useProducts"
 function HomePage() {
 	const { user } = useUser()
 	const { data, fetchNextPage, isFetchingNextPage, isLoading, hasNextPage } =
-		useAllProducts({ limit: "8" })
+		useAllProducts({ limit: "8", user: user?._id })
 
 	const products = data?.pages.flatMap((item) => item.products)
 

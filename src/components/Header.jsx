@@ -100,6 +100,13 @@ function Header({ user }) {
 									</Link>
 								</li>
 								<li>
+									<Link
+										to={"/my-store?tab=" + "products"}
+										className="justify-between">
+										My Store
+									</Link>
+								</li>
+								<li>
 									<a>Settings</a>
 								</li>
 								<li onClick={handleLogout}>

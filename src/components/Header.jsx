@@ -4,6 +4,11 @@ import { BsChatDots } from "react-icons/bs"
 import { BiSearch } from "react-icons/bi"
 import { Link, useNavigate } from "react-router-dom"
 import { useLogout } from "../app/hooks/logoutUser"
+import {
+	NovuProvider,
+	PopoverNotificationCenter,
+	NotificationBell,
+} from "@novu/notification-center"
 
 function Header({ user }) {
 	const { logout } = useLogout()
@@ -28,29 +33,16 @@ function Header({ user }) {
 				</Link>
 				<div className="flex-none gap-8">
 					{/* notification */}
-					<div className="dropdown dropdown-end">
-						<label tabIndex={0} className="btn btn-ghost btn-circle">
-							<div className="indicator">
-								<IoMdNotificationsOutline size={25} />
-								<span className="badge badge-primary badge-xs indicator-item"></span>
-							</div>
-						</label>
-						<ul
-							tabIndex={0}
-							className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-							<li>
-								<Link to={"/profile"} className="justify-between">
-									Profile
-								</Link>
-							</li>
-							<li>
-								<a>Settings</a>
-							</li>
-							<li>
-								<a>Logout</a>
-							</li>
-						</ul>
-					</div>
+
+					<NovuProvider
+						subscriberId={user?._id}
+						applicationIdentifier={"yycaMDVZbUN1"}>
+						<PopoverNotificationCenter colorScheme="light">
+							{({ unseenCount }) => (
+								<NotificationBell unseenCount={unseenCount} />
+							)}
+						</PopoverNotificationCenter>
+					</NovuProvider>
 
 					{/* chat */}
 					<div className="dropdown dropdown-end">

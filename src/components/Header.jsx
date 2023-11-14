@@ -9,6 +9,7 @@ import {
 	PopoverNotificationCenter,
 	NotificationBell,
 } from "@novu/notification-center"
+import { css } from "@emotion/react"
 
 function Header({ user }) {
 	const { logout } = useLogout()
@@ -19,6 +20,11 @@ function Header({ user }) {
 		e.preventDefault()
 		logout()
 	}
+
+	const navigateToProduct = (message) => {
+		window.location.href = `${message.cta.data.url}`
+	}
+
 	return (
 		<div>
 			{/* nav up bar */}
@@ -36,8 +42,48 @@ function Header({ user }) {
 
 					<NovuProvider
 						subscriberId={user?._id}
-						applicationIdentifier={"yycaMDVZbUN1"}>
-						<PopoverNotificationCenter colorScheme="light">
+						applicationIdentifier={"yycaMDVZbUN1"}
+						styles={{
+							notifications: {
+								listItem: {
+									unread: css({
+										"::before": {
+											background: `linear-gradient(135deg, #37cdbe 0%, #37cdbe 100%)`,
+										},
+									}),
+								},
+							},
+							bellButton: {
+								root: {
+									svg: {
+										color: "#2e2e3a",
+									},
+								},
+								dot: {
+									rect: {
+										fill: "#f97316 ",
+									},
+								},
+							},
+
+							header: {
+								title: {
+									"+div": {
+										background: `linear-gradient(135deg, #37cdbe 0%, #37cdbe 100%)`,
+									},
+								},
+							},
+
+							loader: {
+								root: {
+									stroke: "#37cdbe",
+								},
+							},
+						}}>
+						<PopoverNotificationCenter
+							showUserPreferences={false}
+							onNotificationClick={navigateToProduct}
+							colorScheme="light">
 							{({ unseenCount }) => (
 								<NotificationBell unseenCount={unseenCount} />
 							)}

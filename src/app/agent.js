@@ -57,6 +57,9 @@ const Account = {
 	updateMe: (data) => request.put("/user/me", data),
 	updatePassword: (data) => request.put("/user/updatePassword", data),
 	getSeller: (sellerId) => request.get(`/user/${sellerId}`),
+	addUserAddress: (data) => request.put("/user/address/addAddress", data),
+	removeUserAddress: (addressId) =>
+		request.put(`/user/address/removeAddress/${addressId}`, {}),
 }
 
 const Product = {

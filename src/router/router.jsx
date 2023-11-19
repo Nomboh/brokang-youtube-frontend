@@ -17,6 +17,7 @@ import Follow from "../features/follow/Follow.jsx"
 import Follower from "../features/follow/Follower.jsx"
 import Following from "../features/follow/Following.jsx"
 import Seller from "../features/seller/Seller.jsx"
+import Address from "../features/address/Address.jsx"
 
 const router = createBrowserRouter([
 	{
@@ -103,6 +104,11 @@ const router = createBrowserRouter([
 			{
 				element: <Seller />,
 				path: "/seller/:id",
+			},
+
+			{
+				element: <Address />,
+				path: "/address",
 			},
 		],
 	},

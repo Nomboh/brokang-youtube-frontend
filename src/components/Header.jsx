@@ -145,6 +145,11 @@ function Header({ user }) {
 									</Link>
 								</li>
 								<li>
+									<Link to={"/address"} className="justify-between">
+										Address
+									</Link>
+								</li>
+								<li>
 									<a>Settings</a>
 								</li>
 								<li onClick={handleLogout}>

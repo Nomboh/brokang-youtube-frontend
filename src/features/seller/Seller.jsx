@@ -8,6 +8,7 @@ import { useGetSeller } from "./seller"
 import { useProducts } from "../products/useProducts"
 import SellerProducts from "./SellerProducts"
 import SellerReview from "./SellerReview"
+import { useGetReviews } from "../order/review"
 
 function Seller() {
 	const { user } = useUser()
@@ -21,6 +22,10 @@ function Seller() {
 		limit: 6,
 		user: userId,
 	})
+
+	const { isLoading: isLoadingReviews, sellerReviews } = useGetReviews(
+		seller?.user?._id
+	)
 
 	return (
 		<div>
@@ -58,7 +63,12 @@ function Seller() {
 						<SellerProducts products={products} isLoading={isLoading} />
 					)}
 
-					{tab === "reviews" && <SellerReview />}
+					{tab === "reviews" && (
+						<SellerReview
+							isLoadingReviews={isLoadingReviews}
+							sellerReviews={sellerReviews}
+						/>
+					)}
 				</div>
 			</div>
 			<Footer />

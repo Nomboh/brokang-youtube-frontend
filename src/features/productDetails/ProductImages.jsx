@@ -35,6 +35,26 @@ function ProductImages({ product }) {
 					alt={product?.title}
 					className=" w-full h-[500px] object-contain"
 				/>
+				{product?.status !== "sale" && (
+					<div
+						role="alert"
+						className="alert w-[80%] border-none transform -translate-x-1/2 bg-slate-950 absolute bottom-0 left-1/2 right-0">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							className="stroke-red-500 shrink-0 w-6 h-6">
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+						</svg>
+						<span className=" text-white">
+							This product is {product?.status}
+						</span>
+					</div>
+				)}
 
 				<div className=" absolute left-5 right-5 top-1/2 transform -translate-y-1/2 flex justify-between">
 					<div

@@ -18,6 +18,17 @@ import Follower from "../features/follow/Follower.jsx"
 import Following from "../features/follow/Following.jsx"
 import Seller from "../features/seller/Seller.jsx"
 import Address from "../features/address/Address.jsx"
+import Checkout from "../features/checkout/Checkout.jsx"
+import Payment from "../features/payment/Payment.jsx"
+import { loadStripe } from "@stripe/stripe-js"
+import { Elements } from "@stripe/react-stripe-js"
+import Success from "../features/payment/Success.jsx"
+import OrderList from "../features/order/OrderList.jsx"
+import OrderDetails from "../features/order/OrderDetails.jsx"
+
+const stripeKey = import.meta.env.VITE_PUBLISHABLE_KEY
+
+const stripePromise = loadStripe(stripeKey)
 
 const router = createBrowserRouter([
 	{
@@ -60,6 +71,36 @@ const router = createBrowserRouter([
 								path: "following",
 							},
 						],
+					},
+
+					{
+						element: <Checkout />,
+						path: "/checkout",
+					},
+
+					{
+						element: <Success />,
+						path: "/success",
+					},
+
+					{
+						element: <OrderList />,
+						path: "/order",
+					},
+
+					{
+						element: <OrderDetails />,
+						path: "/order/:id",
+					},
+
+					{
+						element: (
+							<Elements stripe={stripePromise}>
+								<Payment />
+							</Elements>
+						),
+
+						path: "/payment",
 					},
 				],
 			},

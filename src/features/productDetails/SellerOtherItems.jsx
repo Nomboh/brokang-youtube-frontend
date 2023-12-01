@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs"
+import { Link } from "react-router-dom"
 import { format } from "timeago.js"
 
 function SellerOtherItems({ sellerProducts }) {
@@ -39,7 +40,8 @@ function SellerOtherItems({ sellerProducts }) {
 					className=" flex gap-2 w-full carousel overflow-x-scroll">
 					{sellerProducts &&
 						sellerProducts?.map((product) => (
-							<div
+							<Link
+								to={`/${product._id}`}
 								key={product?._id}
 								className="card w-44 800px:w-52 bg-base-100 shadow-xl">
 								<figure className=" w-44 800px:w-52">
@@ -72,7 +74,7 @@ function SellerOtherItems({ sellerProducts }) {
 										{format(product.createdAt)}
 									</p>
 								</div>
-							</div>
+							</Link>
 						))}
 				</div>
 				{sellerProducts && sellerProducts?.length > 6 && (

@@ -19,8 +19,16 @@ function Card({ product, lastElementRef }) {
 					<img
 						src={product.images[0]}
 						alt="Shoes"
-						className="h-56 w-full object-cover"
+						className={`h-56 w-full object-cover ${
+							product?.status !== "sale" && "filter brightness-[0.23]"
+						}`}
 					/>
+
+					{product?.status !== "sale" && (
+						<p className=" absolute text-red-500 text-xl text-center">
+							{product?.status}
+						</p>
+					)}
 					{isLike ? (
 						<BsFillHeartFill
 							onClick={(e) => {

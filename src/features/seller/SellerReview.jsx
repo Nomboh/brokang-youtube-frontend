@@ -1,44 +1,42 @@
 import React from "react"
+import Spinner from "../../components/Spinner"
+import Rating from "../../components/Rating"
 
-function SellerReview() {
+function SellerReview({ sellerReviews, isLoadingReviews }) {
+	if (isLoadingReviews) return <Spinner />
 	return (
 		<div className=" w-full">
-			<h1 className=" mt-4 text-2xl font-bold">All Reviews ({12})</h1>
+			<h1 className=" mt-4 text-2xl font-bold">
+				All Reviews ({sellerReviews?.length})
+			</h1>
 			<br />
 			<div className=" flex flex-col gap-5">
-				<div className=" flex gap-2">
-					<img
-						className=" h-14 w-14 rounded-full object-fill"
-						src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"
-					/>
-
-					<div className=" flex flex-col gap-1">
+				{sellerReviews?.length > 0 ? (
+					sellerReviews?.map((review) => (
 						<div className=" flex gap-2">
-							<h1 className=" font-bold">John Doe</h1>
-							<span className=" text-sm text-gray-500">⭐⭐⭐⭐⭐</span>
+							<img
+								className=" h-14 w-14 rounded-full object-fill"
+								src={review?.user?.photo}
+							/>
+
+							<div className=" flex flex-col gap-1">
+								<div className=" flex gap-2">
+									<h1 className=" font-bold">{review?.user.name}</h1>
+									<Rating rating={review?.rating} />
+								</div>
+								<span className=" text-sm text-gray-500">
+									{review?.product.title}
+								</span>
+
+								<p>{review.review}</p>
+							</div>
 						</div>
-						<span className=" text-sm text-gray-500">tennis running shoes</span>
-
-						<p>Timelyy delivery and product is exactly as expected</p>
-					</div>
-				</div>
-
-				<div className=" flex gap-2">
-					<img
-						className=" h-14 w-14 rounded-full object-fill"
-						src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"
-					/>
-
-					<div className=" flex flex-col gap-1">
-						<div className=" flex gap-2">
-							<h1 className=" font-bold">John Doe</h1>
-							<span className=" text-sm text-gray-500">⭐⭐⭐⭐⭐</span>
-						</div>
-						<span className=" text-sm text-gray-500">tennis running shoes</span>
-
-						<p>Timelyy delivery and product is exactly as expected</p>
-					</div>
-				</div>
+					))
+				) : (
+					<p className=" font-bold text-4xl text-left w-full my-24 text-gray-400">
+						You have no reviews yet
+					</p>
+				)}
 			</div>
 		</div>
 	)

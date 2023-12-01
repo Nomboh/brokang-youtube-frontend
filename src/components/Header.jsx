@@ -42,7 +42,7 @@ function Header({ user }) {
 
 					<NovuProvider
 						subscriberId={user?._id}
-						applicationIdentifier={"yycaMDVZbUN1"}
+						applicationIdentifier={import.meta.env.VITE_NOVUS_KEY}
 						styles={{
 							notifications: {
 								listItem: {
@@ -147,6 +147,12 @@ function Header({ user }) {
 								<li>
 									<Link to={"/address"} className="justify-between">
 										Address
+									</Link>
+								</li>
+
+								<li>
+									<Link to={"/order"} className="justify-between">
+										Orders
 									</Link>
 								</li>
 								<li>

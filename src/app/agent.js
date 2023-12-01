@@ -89,6 +89,23 @@ const Follow = {
 	getUserFollowees: () => request.get(`/follow/followee`),
 }
 
+const Order = {
+	createOrder: (data) => request.post("order", data),
+	getUserOrder: () => request.get("order"),
+	getOrder: (id) => request.get("order/" + id),
+	getSellerOrders: () => request.get("order/seller/items"),
+	updateOrderStatus: (data, id) => request.put(`order/${id}`, data),
+}
+
+const Payment = {
+	getPaymentIntent: (data) => request.post(`/payment`, data),
+}
+
+const Review = {
+	createReview: (data) => request.post(`/review/${data.productId}`, data),
+	getSellersReviews: (sellerId) => request.get(`/review/${sellerId}`),
+}
+
 const Subscription = {
 	subscribe: (sellerId) => request.post(`/subscription/${sellerId}`, {}),
 	unsubscribe: (sellerId) =>
@@ -104,6 +121,9 @@ const agent = {
 	Like,
 	Follow,
 	Subscription,
+	Payment,
+	Order,
+	Review,
 }
 
 export default agent

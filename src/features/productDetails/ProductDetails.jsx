@@ -5,12 +5,7 @@ import { useUser } from "../../app/hooks/loadUser"
 import { useProduct, useRecommended, useSellerProducts } from "./productDetail"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import ProductImages from "./ProductImages"
-import {
-	BsChatDots,
-	BsFillHeartFill,
-	BsHeart,
-	BsStarFill,
-} from "react-icons/bs"
+import { BsChatDots, BsFillHeartFill, BsHeart } from "react-icons/bs"
 import { AiOutlineDollarCircle } from "react-icons/ai"
 import { LiaShippingFastSolid } from "react-icons/lia"
 import { FaExchangeAlt } from "react-icons/fa"
@@ -24,6 +19,10 @@ import ProductBar from "./ProductBar"
 import { useLike, useUnlike } from "../../app/hooks/like"
 import { useCreateFollower, useFollowees, useUnfollow } from "../follow/follow"
 import { checkIfIsFollowing } from "../../utils/checkIfIsFollowing"
+import Rating from "../../components/Rating"
+import { useGetReviews } from "../order/review"
+import toast from "react-hot-toast"
+import { useEditProduct } from "../sell/createProduct"
 
 const status = ["sale", "under reservation", "sold out", "hide"]
 
@@ -41,12 +40,20 @@ function ProductDetails() {
 		user?._id
 	)
 
+	const { editAProduct } = useEditProduct()
+
 	const { likeAProduct } = useLike(params?.id)
 	const { unlikeAProduct } = useUnlike(params?.id)
 
 	const { followees } = useFollowees()
 	const { followAUser, isFollowing: iscreating } = useCreateFollower()
 	const { isUnfollowing, unfollowAUser } = useUnfollow()
+
+	const { sellerReviews } = useGetReviews(product?.user._id)
+
+	const ratings = sellerReviews?.reduce((acc, review) => {
+		return acc + review?.rating
+	}, 0)
 
 	const isFollowing = checkIfIsFollowing(
 		followees?.followees,
@@ -94,6 +101,14 @@ function ProductDetails() {
 		unfollowAUser(product?.user._id)
 	}
 
+	const handleStatus = (st) => {
+		if (st === product?.status) {
+			toast.error("This is already the current status")
+		} else {
+			editAProduct({ status: st, productId: params?.id })
+		}
+	}
+
 	return (
 		<div>
 			<Header user={user} />
@@ -119,12 +134,9 @@ function ProductDetails() {
 								<p>
 									Sale Product <strong>{product?.user?.numProducts}</strong>
 								</p>
-								<div className=" flex gap-2">
-									{Array.from(Array(5)).map((rating) => (
-										<div key={rating} className="">
-											<BsStarFill className="text-primary" size={20} />
-										</div>
-									))}
+								<div className=" flex items-center  gap-3">
+									<Rating rating={ratings / sellerReviews?.length} />
+									<p className="font-bold">({sellerReviews?.length})</p>
 								</div>
 							</div>
 						</Link>
@@ -189,7 +201,7 @@ function ProductDetails() {
 									className=" dropdown-content z-10 menu p-2 shodow bg-base-100 rounded-box w-52">
 									{status.map((st) => (
 										<li
-											onClick={() => {}}
+											onClick={() => handleStatus(st)}
 											key={st}
 											className={`${
 												st === product?.status ? "bg-slate-300" : ""
@@ -208,7 +220,7 @@ function ProductDetails() {
 						</div>
 					)}
 
-					{product?.user._id !== user?._id && (
+					{product?.user._id !== user?._id && product?.status === "sale" ? (
 						<div className=" w-full flex gap-6 mt-4 justify-between">
 							{isLike ? (
 								<button
@@ -239,10 +251,31 @@ function ProductDetails() {
 								<p className="text-lg">Chat</p>
 							</button>
 
-							<button className="btn flex items-center btn-outline btn-accent w-48 800px:w-52">
+							<button
+								onClick={() => navigate(`/checkout?id=${product?._id}`)}
+								className="btn flex items-center btn-outline btn-accent w-48 800px:w-52">
 								<AiOutlineDollarCircle size={25} />
 								<p className="text-lg">Pay Safe</p>
 							</button>
+						</div>
+					) : (
+						<div
+							role="alert"
+							className="alert w-full border-none mt-6 bg-slate-950 ">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								className="stroke-red-500 shrink-0 w-6 h-6">
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+							</svg>
+							<span className=" text-white">
+								This product is {product?.status}
+							</span>
 						</div>
 					)}
 

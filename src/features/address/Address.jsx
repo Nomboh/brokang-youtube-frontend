@@ -11,7 +11,6 @@ function Address() {
 
 	const { isRemovingAddress, removeAddress } = useRemoveAddress()
 
-	console.log(user)
 
 	const handleDeletAddress = (addressId) => {
 		removeAddress(addressId)

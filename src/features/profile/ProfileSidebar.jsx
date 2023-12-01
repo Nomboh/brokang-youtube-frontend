@@ -10,6 +10,8 @@ import {
 	useCreateSubscription,
 	useUnSubscription,
 } from "../seller/seller"
+import { useGetReviews } from "../order/review"
+import Rating from "../../components/Rating"
 
 function ProfileSidebar({ user, seller }) {
 	const { followees } = useFollowees()
@@ -20,7 +22,13 @@ function ProfileSidebar({ user, seller }) {
 	const { createASubscription } = useCreateSubscription()
 	const { unSubscriptionToSeller } = useUnSubscription()
 
-	console.log(isSubscribe)
+	const { sellerReviews } = useGetReviews(user?._id)
+
+	const ratings = sellerReviews?.reduce((acc, review) => {
+		return acc + review?.rating
+	}, 0)
+
+	console.log(ratings)
 
 	const isFollowing = checkIfIsFollowing(followees?.followees, user?._id)
 
@@ -117,14 +125,12 @@ function ProfileSidebar({ user, seller }) {
 				<div className="flex items-center justify-between mb-2">
 					<div className="flex items-center gap-2">
 						<p>Ratings</p>
-						<div className="flex gap-1">
-							{Array.from(Array(5)).map((item) => (
-								<BsStarFill key={item} className="text-primary" />
-							))}
-						</div>
+						<Rating rating={ratings / sellerReviews?.length} />
 					</div>
 
-					<p className=" font-bold justify-self-end">(2)</p>
+					<p className=" font-bold justify-self-end">
+						({sellerReviews?.length})
+					</p>
 				</div>
 			</div>
 			<br />

@@ -145,6 +145,11 @@ function Header({ user }) {
 									</Link>
 								</li>
 								<li>
+									<Link to={"/payment-management"} className="justify-between">
+										Payment Management
+									</Link>
+								</li>
+								<li>
 									<Link to={"/address"} className="justify-between">
 										Address
 									</Link>

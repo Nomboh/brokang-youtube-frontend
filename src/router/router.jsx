@@ -25,6 +25,7 @@ import { Elements } from "@stripe/react-stripe-js"
 import Success from "../features/payment/Success.jsx"
 import OrderList from "../features/order/OrderList.jsx"
 import OrderDetails from "../features/order/OrderDetails.jsx"
+import PaymentManagement from "../features/paymentManagement/PaymentManagement.jsx"
 
 const stripeKey = import.meta.env.VITE_PUBLISHABLE_KEY
 
@@ -91,6 +92,11 @@ const router = createBrowserRouter([
 					{
 						element: <OrderDetails />,
 						path: "/order/:id",
+					},
+
+					{
+						element: <PaymentManagement />,
+						path: "/payment-management",
 					},
 
 					{

@@ -60,6 +60,17 @@ const Account = {
 	addUserAddress: (data) => request.put("/user/address/addAddress", data),
 	removeUserAddress: (addressId) =>
 		request.put(`/user/address/removeAddress/${addressId}`, {}),
+
+	addAccount: (data) => request.post("user/account/add", data),
+	removeAccount: (id) => request.put(`user/account/remove/${id}`, {}),
+}
+
+const Withdrawals = {
+	createWithdrawalRequest: (data) => request.post("/withdrawal", data),
+	getWithdrawalRequests: () => request.get("/withdrawal?status=Processing"),
+	getUserWithdrawalRequests: () => request.get("/withdrawal/user"),
+	updateWithdrawalRequests: (data, id) =>
+		request.put(`/withdrawal/${id}`, data),
 }
 
 const Product = {
@@ -124,6 +135,7 @@ const agent = {
 	Payment,
 	Order,
 	Review,
+	Withdrawals,
 }
 
 export default agent

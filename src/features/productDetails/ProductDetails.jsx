@@ -23,6 +23,7 @@ import Rating from "../../components/Rating"
 import { useGetReviews } from "../order/review"
 import toast from "react-hot-toast"
 import { useEditProduct } from "../sell/createProduct"
+import { useCreateConversation } from "../chat/chat"
 
 const status = ["sale", "under reservation", "sold out", "hide"]
 
@@ -48,6 +49,7 @@ function ProductDetails() {
 	const { followees } = useFollowees()
 	const { followAUser, isFollowing: iscreating } = useCreateFollower()
 	const { isUnfollowing, unfollowAUser } = useUnfollow()
+	const { conversation, isCreating } = useCreateConversation()
 
 	const { sellerReviews } = useGetReviews(product?.user._id)
 
@@ -107,6 +109,20 @@ function ProductDetails() {
 		} else {
 			editAProduct({ status: st, productId: params?.id })
 		}
+	}
+
+	const handleChat = () => {
+		conversation(
+			{
+				sellerId: product?.user._id,
+				userId: user?._id,
+			},
+			{
+				onSuccess: (data) => {
+					navigate(`/chat?id=${data?._id}`)
+				},
+			}
+		)
 	}
 
 	return (
@@ -246,7 +262,9 @@ function ProductDetails() {
 								</button>
 							)}
 
-							<button className="btn flex items-center btn-outline btn-accent w-36 800px:w-52">
+							<button
+								onClick={handleChat}
+								className="btn flex items-center btn-outline btn-accent w-36 800px:w-52">
 								<BsChatDots size={25} />
 								<p className="text-lg">Chat</p>
 							</button>

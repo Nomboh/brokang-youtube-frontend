@@ -8,7 +8,7 @@ import ForgotPassword from "../features/forgotPassword/ForgotPassword.jsx"
 import ResetPassword from "../features/resetPassword/ResetPassword"
 import ProfilePage from "../features/profile/ProfilePage"
 import ProtectedRoutes from "./ProtectedRoutes"
-import ProductDetails from "../features/productDetails/productDetails"
+import ProductDetails from "../features/productDetails/ProductDetails"
 import SellProducts from "../features/sell/SellProducts"
 import EditProducts from "../features/sell/EditProducts"
 import Search from "../features/search/Search.jsx"
@@ -26,6 +26,7 @@ import Success from "../features/payment/Success.jsx"
 import OrderList from "../features/order/OrderList.jsx"
 import OrderDetails from "../features/order/OrderDetails.jsx"
 import PaymentManagement from "../features/paymentManagement/PaymentManagement.jsx"
+import Chat from "../features/chat/Chat.jsx"
 
 const stripeKey = import.meta.env.VITE_PUBLISHABLE_KEY
 
@@ -97,6 +98,11 @@ const router = createBrowserRouter([
 					{
 						element: <PaymentManagement />,
 						path: "/payment-management",
+					},
+
+					{
+						element: <Chat />,
+						path: "/chat",
 					},
 
 					{

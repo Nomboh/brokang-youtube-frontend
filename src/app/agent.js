@@ -126,6 +126,15 @@ const Subscription = {
 		request.get(`/subscription/check/${sellerId}`),
 }
 
+const Chat = {
+	createConversation: (data) => request.post(`/conversation`, data),
+	getUsersConversation: () => request.get(`/conversation`),
+	getSingleConversation: (id) => request.get(`/conversation/${id}`),
+	createMessage: (data) => request.post(`message`, data),
+	getUsersMessage: (conversationId) =>
+		request.get(`/message/${conversationId}`),
+}
+
 const agent = {
 	Account,
 	Product,
@@ -136,6 +145,7 @@ const agent = {
 	Order,
 	Review,
 	Withdrawals,
+	Chat,
 }
 
 export default agent

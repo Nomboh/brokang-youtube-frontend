@@ -10,11 +10,15 @@ import {
 	NotificationBell,
 } from "@novu/notification-center"
 import { css } from "@emotion/react"
+import { useUserConversation } from "../features/chat/chat"
+import toast from "react-hot-toast"
 
 function Header({ user }) {
 	const { logout } = useLogout()
 	const [q, setQ] = React.useState("")
 	const navigate = useNavigate()
+
+	const { conversations } = useUserConversation()
 
 	const handleLogout = (e) => {
 		e.preventDefault()
@@ -23,6 +27,16 @@ function Header({ user }) {
 
 	const navigateToProduct = (message) => {
 		window.location.href = `${message.cta.data.url}`
+	}
+
+	const handleConversation = () => {
+		if (conversations.length > 0) {
+			navigate(`/chat?id=${conversations[0]._id}`)
+		} else {
+			toast.error(
+				"You have no conversation yet, start a conversation with a seller"
+			)
+		}
 	}
 
 	return (
@@ -91,7 +105,11 @@ function Header({ user }) {
 					</NovuProvider>
 
 					{/* chat */}
-					<div className="dropdown dropdown-end">
+					<div className="cursor-pointer" onClick={handleConversation}>
+						<BsChatDots size={25} />
+					</div>
+
+					{/* <div onClick={handleConversation} className="dropdown dropdown-end">
 						<label tabIndex={0} className="btn btn-ghost btn-circle">
 							<div className="indicator">
 								<BsChatDots size={25} />
@@ -115,7 +133,7 @@ function Header({ user }) {
 								<a>Logout</a>
 							</li>
 						</ul>
-					</div>
+					</div> */}
 
 					{user ? (
 						<div className="dropdown dropdown-end">

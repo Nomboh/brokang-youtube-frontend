@@ -1,5 +1,4 @@
-import React from "react"
-import { IoMdNotificationsOutline } from "react-icons/io"
+import React, { useContext, useEffect } from "react"
 import { BsChatDots } from "react-icons/bs"
 import { BiSearch } from "react-icons/bi"
 import { Link, useNavigate } from "react-router-dom"
@@ -12,13 +11,35 @@ import {
 import { css } from "@emotion/react"
 import { useUserConversation } from "../features/chat/chat"
 import toast from "react-hot-toast"
+import { NotificationContext } from "../app/context/NotificationContext"
+import { format } from "timeago.js"
+import { useOutletContext } from "react-router-dom"
 
 function Header({ user }) {
 	const { logout } = useLogout()
 	const [q, setQ] = React.useState("")
 	const navigate = useNavigate()
 
+	const { socketId } = useOutletContext()
+
+	const { notifications, removeNotification, addNotification } =
+		useContext(NotificationContext)
+
 	const { conversations } = useUserConversation()
+
+	useEffect(() => {
+		if (socketId) {
+			socketId.on("getNotifications", (data) => {
+				if (data) {
+					addNotification(data)
+				}
+			})
+		}
+
+		return () => {
+			socketId.off("getNotifications")
+		}
+	}, [socketId])
 
 	const handleLogout = (e) => {
 		e.preventDefault()
@@ -37,6 +58,11 @@ function Header({ user }) {
 				"You have no conversation yet, start a conversation with a seller"
 			)
 		}
+	}
+
+	const handleChatNotification = (id) => {
+		navigate(`/chat?id=${id}`)
+		removeNotification(id)
 	}
 
 	return (
@@ -105,35 +131,41 @@ function Header({ user }) {
 					</NovuProvider>
 
 					{/* chat */}
-					<div className="cursor-pointer" onClick={handleConversation}>
-						<BsChatDots size={25} />
-					</div>
 
-					{/* <div onClick={handleConversation} className="dropdown dropdown-end">
-						<label tabIndex={0} className="btn btn-ghost btn-circle">
-							<div className="indicator">
-								<BsChatDots size={25} />
-								<span className="badge badge-primary badge-sm indicator-item">
-									5
-								</span>
-							</div>
-						</label>
-						<ul
-							tabIndex={0}
-							className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-							<li>
-								<Link to={"/profile"} className="justify-between">
-									Profile
-								</Link>
-							</li>
-							<li>
-								<a>Settings</a>
-							</li>
-							<li>
-								<a>Logout</a>
-							</li>
-						</ul>
-					</div> */}
+					{notifications?.length > 0 ? (
+						<div className="dropdown dropdown-end">
+							<label tabIndex={0} className="btn btn-ghost btn-circle">
+								<div className="indicator">
+									<BsChatDots size={25} />
+									<span className="badge badge-primary badge-sm indicator-item">
+										{notifications?.length}
+									</span>
+								</div>
+							</label>
+							<ul
+								tabIndex={0}
+								className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-96">
+								{notifications?.map((notification) => (
+									<li>
+										<p
+											onClick={() =>
+												handleChatNotification(notification?.conversationId)
+											}
+											className="flex items-center justify-between">
+											<span>{notification.senderName} send you a message</span>
+											<span className=" text-gray-400">
+												{format(notification?.createdAt)}
+											</span>
+										</p>
+									</li>
+								))}
+							</ul>
+						</div>
+					) : (
+						<div className="cursor-pointer" onClick={handleConversation}>
+							<BsChatDots size={25} />
+						</div>
+					)}
 
 					{user ? (
 						<div className="dropdown dropdown-end">

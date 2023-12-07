@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useContext } from "react"
 import Header from "../../components/Header"
 import Footer from "../../components/Footer"
 import {
@@ -16,15 +16,24 @@ import {
 } from "./chat"
 import { otherUser } from "./chatUtils"
 import { cloudinaryUpload } from "../../utils/cloudinaryUpload"
+import { useQueryClient } from "@tanstack/react-query"
+import { NotificationContext } from "../../app/context/NotificationContext"
 
 function Chat() {
 	const scrollRef = useRef(null)
-	const { user } = useOutletContext()
+	const { user, socketId, onlineUsers } = useOutletContext()
 	const navigate = useNavigate()
 	const [searchParams, setSearchParams] = useSearchParams()
 	const [text, setText] = React.useState("")
 
+	const { addNotification, notifications, removeNotification } =
+		useContext(NotificationContext)
+
 	const conversationId = searchParams.get("id")
+
+	const queryClient = useQueryClient()
+
+	console.log(notifications)
 
 	const { conversations, loadingConversation } = useUserConversation()
 	const { conversation } = useCurrentChat(conversationId)
@@ -34,6 +43,51 @@ function Chat() {
 	useEffect(() => {
 		scrollRef.current?.scrollIntoView({ behavior: "smooth" })
 	}, [messages])
+
+	useEffect(() => {
+		if (socketId) {
+			socketId.on("getMessage", (data) => {
+				const newMessage = {
+					_id: data?.id,
+					text: data?.text,
+					image: data?.image,
+					senderId: data?.senderId,
+					conversationId: data?.conversationId,
+					createdAt: Date.now(),
+				}
+
+				if (newMessage && conversationId === data?.conversationId) {
+					queryClient.setQueryData(["messages", conversationId], (oldData) => {
+						return [...oldData, newMessage]
+					})
+				}
+
+				queryClient.refetchQueries(["conversations"])
+			})
+		}
+
+		return () => {
+			socketId.off("getMessage")
+		}
+	}, [socketId, queryClient, conversationId])
+
+	useEffect(() => {
+		if (socketId) {
+			socketId.on("getNotifications", (data) => {
+				const sender = conversation?.members.find(
+					(m) => m._id === data?.senderId
+				)
+
+				if (!sender && data) {
+					addNotification(data)
+				}
+			})
+		}
+
+		return () => {
+			socketId.off("getNotifications")
+		}
+	}, [socketId, conversation])
 
 	const messagesFactory = (image) => {
 		const msg = { senderId: user?._id, conversationId }
@@ -46,7 +100,17 @@ function Chat() {
 
 		if (msg?.text || msg?.image) {
 			message(msg, {
-				onSuccess: () => {
+				onSuccess: (data) => {
+					// senderId, receiverId, text, image, id, conversationId, senderName
+					socketId.emit("sendMessage", {
+						senderId: user?._id,
+						receiverId: otherUser(conversation, user)?._id,
+						text: data?.text,
+						image: data?.image,
+						id: data?._id,
+						conversationId: data?.conversationId,
+						senderName: user?.storename,
+					})
 					setText("")
 				},
 			})
@@ -77,9 +141,14 @@ function Chat() {
 	const handleConversationClick = (id) => {
 		setSearchParams(`id=${id}`)
 		navigate(`/chat?id=${id}`)
+		removeNotification(id)
 	}
 
 	const chatPartner = otherUser(conversation, user)
+
+	const checkOnlineUsers = (chat) => {
+		return onlineUsers?.find((ou) => ou.userId === otherUser(chat, user)?._id)
+	}
 
 	return (
 		<div>
@@ -91,6 +160,8 @@ function Chat() {
 					conversations={conversations}
 					handleConversationClick={handleConversationClick}
 					user={user}
+					checkOnlineUsers={checkOnlineUsers}
+					notifications={notifications}
 				/>
 				<ChatMain
 					handleSubmitMsg={handleSubmitMsg}

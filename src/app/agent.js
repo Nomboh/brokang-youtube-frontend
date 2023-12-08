@@ -3,7 +3,7 @@ import toast from "react-hot-toast"
 import router from "../router/router"
 
 axios.defaults.baseURL =
-	"https://backend-brokang-youtube-api1-nomboh.vercel.app/api/v1"
+	"https://backend-brokang-youtube-api1.vercel.app/api/v1"
 
 const responseBody = (response) => response.data
 

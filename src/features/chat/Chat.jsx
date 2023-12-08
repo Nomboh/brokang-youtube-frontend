@@ -33,8 +33,6 @@ function Chat() {
 
 	const queryClient = useQueryClient()
 
-	console.log(notifications)
-
 	const { conversations, loadingConversation } = useUserConversation()
 	const { conversation } = useCurrentChat(conversationId)
 	const { isCreating, message } = useCreateMessage()
@@ -153,28 +151,50 @@ function Chat() {
 	return (
 		<div>
 			<Header user={user} />
-			<div className=" flex section w-full flex-col 800px:flex-row relative items-start gap-4">
-				<ChatSide
-					conversationId={conversationId}
-					loadingConversation={loadingConversation}
-					conversations={conversations}
-					handleConversationClick={handleConversationClick}
-					user={user}
-					checkOnlineUsers={checkOnlineUsers}
-					notifications={notifications}
-				/>
-				<ChatMain
-					handleSubmitMsg={handleSubmitMsg}
-					handleUploadImage={handleUploadImage}
-					chatPartner={chatPartner}
-					user={user}
-					scrollRef={scrollRef}
-					text={text}
-					setText={setText}
-					messages={messages}
-					loadingMessage={loadingMessage}
-					isCreating={isCreating}
-				/>
+			<div className=" drawer ">
+				<input id="chat-label" type="checkbox" className="drawer-toggle" />
+				<div className=" drawer-content flex section w-full flex-col 800px:flex-row relative items-start gap-4">
+					<div className=" hidden 800px:block w-2/6">
+						<ChatSide
+							conversationId={conversationId}
+							loadingConversation={loadingConversation}
+							conversations={conversations}
+							handleConversationClick={handleConversationClick}
+							user={user}
+							checkOnlineUsers={checkOnlineUsers}
+							notifications={notifications}
+						/>
+					</div>
+					<ChatMain
+						handleSubmitMsg={handleSubmitMsg}
+						handleUploadImage={handleUploadImage}
+						chatPartner={chatPartner}
+						user={user}
+						scrollRef={scrollRef}
+						text={text}
+						setText={setText}
+						messages={messages}
+						loadingMessage={loadingMessage}
+						isCreating={isCreating}
+					/>
+				</div>
+				<div className=" drawer-side absolute w-full section">
+					<label
+						htmlFor="chat-label"
+						aria-label="close sidebar"
+						className="drawer-overlay"></label>
+					<div className=" 800px:hidden w-[80%] ">
+						<ChatSide
+							conversationId={conversationId}
+							loadingConversation={loadingConversation}
+							conversations={conversations}
+							handleConversationClick={handleConversationClick}
+							user={user}
+							checkOnlineUsers={checkOnlineUsers}
+							notifications={notifications}
+						/>
+					</div>
+				</div>
 			</div>
 			<Footer />
 		</div>

@@ -24,7 +24,6 @@ function Checkout() {
 	const id = searchParams.get("id")
 
 	const { product } = useProduct(id)
-	console.log(product)
 
 	const originalPrice = product?.originalPrice
 	const discountPrice = product?.discountPrice

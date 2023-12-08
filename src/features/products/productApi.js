@@ -10,7 +10,6 @@ export const getAllProducts = async (pageNumber, filterData) => {
 	if (filterData?.brand) params.append("brand", filterData.brand)
 	if (filterData?.price) {
 		const { originalPrice, operator } = filterData.price
-		console.log(originalPrice, operator)
 
 		switch (operator) {
 			case "lt":

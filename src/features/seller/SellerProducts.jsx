@@ -1,10 +1,15 @@
 import Card from "../products/Card"
 import React from "react"
 import { BsSearch } from "react-icons/bs"
+import Pagination from "../../components/Pagination"
 
-function SellerProducts({ products, isLoading }) {
+function SellerProducts({ products, isLoading, pageNumber, setPageNumber }) {
+	const handleNextPage = (nextPage) => {
+		setPageNumber(nextPage)
+	}
+
 	if (isLoading) return <Spinner />
-	console.log(products)
+
 	return (
 		<div className=" w-full p-2 800px:p-0">
 			<div className=" mt-3 relative max-w-xs">
@@ -24,6 +29,12 @@ function SellerProducts({ products, isLoading }) {
 						<Card key={product._id} product={product} />
 					))}
 			</div>
+
+			<Pagination
+				currrentPage={pageNumber}
+				onPageChange={handleNextPage}
+				totalPages={products?.totalPages}
+			/>
 		</div>
 	)
 }

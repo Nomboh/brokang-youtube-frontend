@@ -7,7 +7,7 @@ const ResetPassword = () => {
 	const [confirmPassword, setConfirmPassword] = useState("")
 
 	const params = useParams()?.resetToken
-	console.log(params)
+	
 	const { resetPass, isLoading } = useResetPassword()
 
 	const handleSubmit = (e) => {

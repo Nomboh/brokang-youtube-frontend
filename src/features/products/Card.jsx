@@ -3,15 +3,35 @@ import { BsFillHeartFill, BsHeart } from "react-icons/bs"
 import { format } from "timeago.js"
 import { Link } from "react-router-dom"
 import { useLike, useUnlike } from "../../app/hooks/like"
+import { useUser } from "../../app/hooks/loadUser"
+import { useNavigate } from "react-router-dom"
 
 function Card({ product, lastElementRef }) {
 	const { likeAProduct } = useLike(product?._id)
 	const { unlikeAProduct } = useUnlike(product?._id)
+	const { user } = useUser()
+	const navigate = useNavigate()
 
 	const likes = JSON.parse(localStorage.getItem("likes"))
 	const isProductLiked = likes?.some((lk) => lk.product._id === product?._id)
 
 	const [isLike, setIslike] = useState(isProductLiked)
+
+	const handleLike = (e) => {
+		e.preventDefault()
+		if (!user) return navigate("/login")
+
+		setIslike(!isLike)
+		likeAProduct(product?._id)
+	}
+
+	const handleUnlike = (e) => {
+		e.preventDefault()
+
+		if (!user) return navigate("/login")
+		setIslike(!isLike)
+		unlikeAProduct(product?._id)
+	}
 	return (
 		<Link ref={lastElementRef} to={`/${product._id}`}>
 			<div className="card  bg-base-100 shadow-xl">
@@ -31,21 +51,13 @@ function Card({ product, lastElementRef }) {
 					)}
 					{isLike ? (
 						<BsFillHeartFill
-							onClick={(e) => {
-								e.preventDefault()
-								setIslike(!isLike)
-								unlikeAProduct(product?._id)
-							}}
+							onClick={handleUnlike}
 							size={25}
 							className="absolute top-3 right-3 cursor-pointer text-red-500 z-30"
 						/>
 					) : (
 						<BsHeart
-							onClick={(e) => {
-								e.preventDefault()
-								setIslike(!isLike)
-								likeAProduct(product?._id)
-							}}
+							onClick={handleLike}
 							size={25}
 							className="absolute top-3 right-3 cursor-pointer text-gray-500 z-30"
 						/>

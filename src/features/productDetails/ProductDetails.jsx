@@ -88,9 +88,9 @@ function ProductDetails() {
 
 	if (isLoading) return <Spinner />
 
-	const percentageOff = product.discountPrice
-		? ((product.originalPrice - product.discountPrice) /
-				product.originalPrice) *
+	const percentageOff = product?.discountPrice
+		? ((product?.originalPrice - product?.discountPrice) /
+				product?.originalPrice) *
 		  100
 		: 0
 
@@ -121,8 +121,26 @@ function ProductDetails() {
 				onSuccess: (data) => {
 					navigate(`/chat?id=${data?._id}`)
 				},
+
+				onError: () => {
+					navigate(`/login`)
+				},
 			}
 		)
+	}
+
+	const handleLike = () => {
+		if (!user) return navigate("/login")
+		setIslike(!isLike)
+		likeAProduct(params?.id)
+		setNumlikes((prev) => prev + 1)
+	}
+
+	const handleUnlike = () => {
+		if (!user) return navigate("/login")
+		setIslike(!isLike)
+		unlikeAProduct(params?.id)
+		setNumlikes((prev) => prev - 1)
 	}
 
 	return (
@@ -240,22 +258,14 @@ function ProductDetails() {
 						<div className=" w-full flex gap-6 mt-4 justify-between">
 							{isLike ? (
 								<button
-									onClick={() => {
-										setIslike(!isLike)
-										unlikeAProduct(params?.id)
-										setNumlikes((prev) => prev - 1)
-									}}
+									onClick={handleUnlike}
 									className=" w-16 btn  p-1 flex flex-col items-center">
 									<BsFillHeartFill className="text-red-500" size={23} />
 									<p>{numLikes}</p>
 								</button>
 							) : (
 								<button
-									onClick={() => {
-										setIslike(!isLike)
-										likeAProduct(params?.id)
-										setNumlikes((prev) => prev + 1)
-									}}
+									onClick={handleLike}
 									className=" w-16 btn  p-1 flex flex-col items-center">
 									<BsHeart className="text-black" size={23} />
 									<p>{numLikes}</p>
@@ -363,6 +373,7 @@ function ProductDetails() {
 				setIsLike={setIslike}
 				setNumLikes={setNumlikes}
 				status={status}
+				handleChat={handleChat}
 			/>
 			<Footer />
 		</div>

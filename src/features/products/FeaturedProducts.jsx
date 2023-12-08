@@ -31,7 +31,7 @@ function FeaturedProducts({
 	if (isLoading) return <Spinner />
 
 	return (
-		<section className="section">
+		<section className="section px-2 800px:px-0">
 			<h1 className="font-bold text-2xl my-6 ">Featured Products</h1>
 			<div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 				{products &&

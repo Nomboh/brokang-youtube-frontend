@@ -12,7 +12,7 @@ function BatchEditing({
 }) {
 	return (
 		<div
-			className={`fixed p-1 items-center right-2 bottom-0 h-[500px] bg-white w-[100px] rounded-t-full border-2`}>
+			className={`fixed z-50 p-1 items-center right-2 bottom-0 h-[500px] bg-white w-[100px] rounded-t-full border-2`}>
 			<div className=" mt-2 w-full flex flex-col items-center">
 				<div className=" w-[80px] cursor-pointer text-center">
 					<p>product selection</p>

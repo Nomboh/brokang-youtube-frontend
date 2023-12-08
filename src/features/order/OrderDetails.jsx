@@ -25,7 +25,6 @@ function OrderDetails() {
 	const { sellerReviews } = useGetReviews(order?.seller)
 	const { createAReview, isCreatingReview } = useCreateReview()
 
-	console.log(sellerReviews)
 	const refReview = React.useRef(null)
 
 	const isReviewed = sellerReviews?.some(
@@ -54,8 +53,6 @@ function OrderDetails() {
 	const navigate = useNavigate()
 
 	if (isLoading) return <Spinner />
-
-	console.log(order)
 
 	return (
 		<div>

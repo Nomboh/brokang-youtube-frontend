@@ -27,12 +27,13 @@ import OrderList from "../features/order/OrderList.jsx"
 import OrderDetails from "../features/order/OrderDetails.jsx"
 import PaymentManagement from "../features/paymentManagement/PaymentManagement.jsx"
 import Chat from "../features/chat/Chat.jsx"
+import NotFound from "../components/NotFound.jsx"
 
 const stripeKey = import.meta.env.VITE_PUBLISHABLE_KEY
 
 const stripePromise = loadStripe(stripeKey)
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
 	{
 		path: "/",
 		element: <App />,
@@ -162,6 +163,11 @@ const router = createBrowserRouter([
 			{
 				element: <Address />,
 				path: "/address",
+			},
+
+			{
+				element: <NotFound />,
+				path: "*",
 			},
 		],
 	},

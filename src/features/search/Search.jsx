@@ -15,8 +15,6 @@ function Search() {
 	const q = searchParams.get("q")
 	const tag = searchParams.get("tag")
 
-	console.log(tag)
-
 	const { user } = useUser()
 	const { data, isFetchingNextPage, hasNextPage, isLoading, fetchNextPage } =
 		useAllProducts({

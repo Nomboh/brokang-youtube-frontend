@@ -3,22 +3,26 @@ import Header from "../../components/Header"
 import { useUser } from "../../app/hooks/loadUser"
 import Footer from "../../components/Footer"
 import ProfileSidebar from "../profile/ProfileSidebar"
-import { useParams, useSearchParams } from "react-router-dom"
+import { useParams, useSearchParams, useNavigate } from "react-router-dom"
 import { useGetSeller } from "./seller"
 import { useProducts } from "../products/useProducts"
 import SellerProducts from "./SellerProducts"
 import SellerReview from "./SellerReview"
 import { useGetReviews } from "../order/review"
+import { useCreateConversation } from "../chat/chat"
 
 function Seller() {
 	const { user } = useUser()
 	const userId = useParams()?.id
+	const navigate = useNavigate()
+	const [pageNumber, setPageNumber] = React.useState(1)
 	let [searchParams, setSearchParams] = useSearchParams()
 	const tab = searchParams.get("tab")
 	const { seller } = useGetSeller(userId)
+	const { conversation } = useCreateConversation()
 
 	const { products, isLoading } = useProducts({
-		pageNumber: 1,
+		pageNumber,
 		limit: 6,
 		user: userId,
 	})
@@ -27,12 +31,36 @@ function Seller() {
 		seller?.user?._id
 	)
 
+	const handleChat = () => {
+		conversation(
+			{
+				sellerId: seller?.user._id,
+				userId: user?._id,
+			},
+			{
+				onSuccess: (data) => {
+					navigate(`/chat?id=${data?._id}`)
+				},
+
+				onError: () => {
+					navigate(`/login`)
+				},
+			}
+		)
+	}
+
 	return (
 		<div>
 			<Header user={user} />
 			<div className=" section normalFlexResponsive">
 				<div className=" w-full 800px:w-3/12 self-start mb-14 800px:mr-12 800px:mb-0">
-					{seller && <ProfileSidebar user={seller?.user} seller={user?._id} />}
+					{seller && (
+						<ProfileSidebar
+							handleChat={handleChat}
+							user={seller?.user}
+							seller={"sellerId"}
+						/>
+					)}
 				</div>
 				<div className=" w-full 800px:w-9/12 self-start">
 					<div className=" h-52 800px:h-64 w-full rounded-md">
@@ -60,7 +88,12 @@ function Seller() {
 					</div>
 
 					{tab === "products" && products && (
-						<SellerProducts products={products} isLoading={isLoading} />
+						<SellerProducts
+							pageNumber={pageNumber}
+							setPageNumber={setPageNumber}
+							products={products}
+							isLoading={isLoading}
+						/>
 					)}
 
 					{tab === "reviews" && (

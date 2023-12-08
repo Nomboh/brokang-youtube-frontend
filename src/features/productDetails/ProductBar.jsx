@@ -4,19 +4,23 @@ import { FaExchangeAlt } from "react-icons/fa"
 import { BiEdit } from "react-icons/bi"
 import { useNavigate } from "react-router-dom"
 
-const ProductBar = ({
-	status,
-	product,
-	user,
-	isVisible,
-	unlikeAProduct,
-	likeAProduct,
-	numLikes,
-	isLike,
-	setIsLike,
-	setNumLikes,
-}) => {
+const ProductBar = (props) => {
+	const {
+		status,
+		product,
+		user,
+		isVisible,
+		unlikeAProduct,
+		likeAProduct,
+		numLikes,
+		isLike,
+		setIsLike,
+		setNumLikes,
+		handleChat,
+	} = props
+	const navigate = useNavigate()
 	const handleLike = () => {
+		if (!user) return navigate("/login")
 		if (isLike) {
 			unlikeAProduct(product?._id)
 			setIsLike(!isLike)
@@ -27,8 +31,6 @@ const ProductBar = ({
 			setNumLikes((prev) => prev + 1)
 		}
 	}
-
-	const navigate = useNavigate()
 
 	const visibleStyles = isVisible
 		? "fixed 800px:top-0 bottom-0 800px:-bottom-full left-0 right-0"
@@ -128,11 +130,15 @@ const ProductBar = ({
 								<p className="text-lg">{numLikes}</p>
 							</button>
 
-							<button className="btn w-36 800px:w-52 btn-outline btn-accent">
+							<button
+								onClick={handleChat}
+								className="btn w-36 800px:w-52 btn-outline btn-accent">
 								<BsChatDots size={25} />
 								Chat
 							</button>
-							<button className="btn flex-1 btn-active btn-block text-white btn-accent">
+							<button
+								onClick={() => navigate(`/checkout?id=${product?._id}`)}
+								className="btn flex-1 btn-active btn-block text-white btn-accent">
 								<AiOutlineDollarCircle size={25} />
 								Safe Payment
 							</button>

@@ -46,7 +46,7 @@ function SaleProducts({ user }) {
 
 	return (
 		<div className=" w-full relative">
-			<div className=" w-full flex gap-x-8 items-center flex-wrap">
+			<div className=" px-2 800px:px-0 w-full flex gap-x-8 items-center flex-wrap">
 				{/* category */}
 				<div className="dropdown">
 					<label tabIndex={0} className="btn m-1 btn-outline hover:btn-neutral">
@@ -119,7 +119,7 @@ function SaleProducts({ user }) {
 			</div>
 
 			{/* products */}
-			<div className=" w-full">
+			<div className=" w-full px-2 800px:px-0">
 				<div className="w-full mt-6 flex items-center justify-between">
 					<h2 className="inline-block text-xl">
 						all sales {products?.productLength}

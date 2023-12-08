@@ -19,7 +19,7 @@ function ChatMain(props) {
 	} = props
 
 	if (loadingMessage) return <Spinner />
-	console.log(messages)
+
 	return (
 		<div className=" 800px:w-4/6 w-full h-[600px] border-2 text-left">
 			{/* Chat header */}
@@ -30,10 +30,16 @@ function ChatMain(props) {
 					alt={chatPartner?.name}
 				/>
 
-				<div className="text-left cursor-pointer">
+				<div className="text-left cursor-pointer flex-1">
 					<p className=" font-bold text-xl">{chatPartner?.storename}</p>
 					<p className=" mt-2">{chatPartner?.numProducts} items for sale</p>
 				</div>
+
+				<label
+					htmlFor="chat-label"
+					className=" 800px:hidden btn btn-neutral btn-sm">
+					users
+				</label>
 			</div>
 
 			{/* Chat body */}

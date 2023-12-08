@@ -15,7 +15,7 @@ function ChatSide({
 
 	return (
 		<div
-			className={`800px:w-2/6 bg-white overflow-y-scroll border-2 h-[600px] text-left`}>
+			className={`w-full bg-white overflow-y-scroll border-2 h-[600px] text-left`}>
 			{conversations?.map((conversation) => {
 				return (
 					<div

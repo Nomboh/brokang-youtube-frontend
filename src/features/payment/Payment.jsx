@@ -38,7 +38,6 @@ function Payment() {
 
 	const { mutate, clientSecret } = usePaymentIntent()
 	const { isOrdering, order } = useCreateOrder()
-	console.log(clientSecret)
 
 	useEffect(() => {
 		if (totalPrice) {

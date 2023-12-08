@@ -78,6 +78,29 @@ function Header({ user }) {
 					/>
 				</Link>
 				<div className="flex-none gap-8">
+					{/* search mobile */}
+					<div className="dropdown dropdown-right bg-white z-50 800px:hidden">
+						<label tabIndex={0} className="btn btn-ghost btn-circle">
+							<BiSearch size={25} />
+						</label>
+						<ul className=" dropdown-content w-[200px]" tabIndex={0}>
+							<div className="relative w-full">
+								<input
+									className="input w-full input-bordered rounded-full"
+									onChange={(e) => setQ(e.target.value)}
+								/>
+
+								<BiSearch
+									className="text-gray-400 absolute top-3 right-3"
+									size={25}
+									onClick={() => {
+										navigate(`/search?q=${q}`)
+									}}
+								/>
+							</div>
+						</ul>
+					</div>
+
 					{/* notification */}
 
 					<NovuProvider
@@ -177,7 +200,7 @@ function Header({ user }) {
 										<img src={user.photo} />
 									</div>
 								</label>
-								<p className="text-bold">{user.storename}</p>
+								<p className="text-bold hidden 800px:block">{user.storename}</p>
 							</div>
 							<ul
 								tabIndex={0}

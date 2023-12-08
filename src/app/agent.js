@@ -1,8 +1,8 @@
 import axios from "axios"
 import toast from "react-hot-toast"
+import router from "../router/router"
 
 axios.defaults.baseURL = "http://localhost:4000/api/v1"
-axios.defaults.withCredentials = true
 
 const responseBody = (response) => response.data
 
@@ -26,6 +26,11 @@ axios.interceptors.response.use(
 				toast.error(data.message)
 				break
 
+			case 404: {
+				router.navigate("/not-found")
+				break
+			}
+
 			case 403:
 				toast.error("You are not allowed to do that")
 				break
@@ -39,10 +44,14 @@ axios.interceptors.response.use(
 )
 
 const request = {
-	get: (url, params) => axios.get(url, { params }).then(responseBody),
-	post: (url, body) => axios.post(url, body).then(responseBody),
-	put: (url, body) => axios.put(url, body).then(responseBody),
-	delete: (url) => axios.post(url).then(responseBody),
+	get: (url, params) =>
+		axios.get(url, { params, withCredentials: true }).then(responseBody),
+	post: (url, body) =>
+		axios.post(url, body, { withCredentials: true }).then(responseBody),
+	put: (url, body) =>
+		axios.put(url, body, { withCredentials: true }).then(responseBody),
+	delete: (url) =>
+		axios.post(url, {}, { withCredentials: true }).then(responseBody),
 }
 
 const Account = {

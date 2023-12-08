@@ -12,11 +12,14 @@ import {
 } from "../seller/seller"
 import { useGetReviews } from "../order/review"
 import Rating from "../../components/Rating"
+import { useNavigate } from "react-router-dom"
 
-function ProfileSidebar({ user, seller }) {
+function ProfileSidebar({ user, seller, handleChat }) {
 	const { followees } = useFollowees()
 	const { followAUser, isFollowing: isfollowing } = useCreateFollower()
 	const { isUnfollowing, unfollowAUser } = useUnfollow()
+
+	const navigate = useNavigate()
 
 	const { isSubscribe } = useCheckSubscription(user?._id)
 	const { createASubscription } = useCreateSubscription()
@@ -28,24 +31,22 @@ function ProfileSidebar({ user, seller }) {
 		return acc + review?.rating
 	}, 0)
 
-	console.log(ratings)
-
 	const isFollowing = checkIfIsFollowing(followees?.followees, user?._id)
 
 	const handleFollow = () => {
-		followAUser(user?._id)
+		followAUser(user?._id, { onError: () => navigate("/login") })
 	}
 
 	const handleUnfollow = () => {
-		unfollowAUser(user?._id)
+		unfollowAUser(user?._id, { onError: () => navigate("/login") })
 	}
 
 	const handleSubscription = () => {
-		createASubscription(user?._id)
+		createASubscription(user?._id, { onError: () => navigate("/login") })
 	}
 
 	const handleUnSubscription = () => {
-		unSubscriptionToSeller(user?._id)
+		unSubscriptionToSeller(user?._id, { onError: () => navigate("/login") })
 	}
 
 	return (
@@ -94,7 +95,9 @@ function ProfileSidebar({ user, seller }) {
 							</button>
 						)}
 
-						<button className="btn btn-primary btn-outline rounded-full w-4/5">
+						<button
+							onClick={handleChat}
+							className="btn btn-primary btn-outline rounded-full w-4/5">
 							<BsFillChatDotsFill size={23} className="mr-2" />
 							Chat
 						</button>

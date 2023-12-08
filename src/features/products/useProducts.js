@@ -6,7 +6,6 @@ export const useAllProducts = (filterData) => {
 		useInfiniteQuery({
 			queryFn: ({ pageParam = 1 }) => getAllProducts(pageParam, filterData),
 			queryKey: ["get-all-products", filterData],
-			enabled: !!filterData.user,
 			getNextPageParam: (lastPage, allPages) => {
 				return lastPage.totalPages === allPages.length
 					? undefined

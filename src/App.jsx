@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { FaPlus } from "react-icons/fa"
 
-const ENDPOINT = "http://localhost:5000"
+const ENDPOINT = "https://yt-socket-brokang.onrender.com/"
 const socketId = socketIo(ENDPOINT, { transports: ["websocket", "polling"] })
 
 function App() {

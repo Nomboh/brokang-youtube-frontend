@@ -129,7 +129,8 @@ const PaymentManagement = () => {
 								Avialable amount
 							</h1>
 							<h1 className=" mt-2 text-2xl font-bold">
-								${user?.availableBalance ? user?.availableBalance : 0}
+								$
+								{user?.availableBalance.toFixed(2) ? user?.availableBalance : 0}
 							</h1>
 						</div>
 
@@ -138,7 +139,7 @@ const PaymentManagement = () => {
 								Account balance
 							</h1>
 							<h1 className=" mt-2 text-2xl font-bold">
-								${user?.accountBalance ? user?.accountBalance : 0}
+								${user?.accountBalance.toFixed(2) ? user?.accountBalance : 0}
 							</h1>
 						</div>
 					</div>

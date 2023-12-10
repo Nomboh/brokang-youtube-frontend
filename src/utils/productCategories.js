@@ -2,24 +2,26 @@ export const productCategories = [
 	{
 		id: 1,
 		title: "computer",
-		image_Url: "https://www.pngmart.com/files/1/Computer-Icon-PNG.png",
+		image_Url:
+			"https://res.cloudinary.com/queentech/image/upload/v1702178592/Computer-Icon-PNG-min_wtrhme.png",
 	},
 	{
 		id: 2,
 		title: "cosmetics",
 		image_Url:
-			"https://www.pngmart.com/files/17/Luxury-Cosmetics-PNG-Clipart.png",
+			"https://res.cloudinary.com/queentech/image/upload/v1702178593/Luxury-Cosmetics-PNG-Clipart-min_x0flxi.png",
 	},
 	{
 		id: 3,
 		title: "shoes",
-		image_Url: "https://www.pngmart.com/files/1/Dock-Shoes-PNG.png",
+		image_Url:
+			"https://res.cloudinary.com/queentech/image/upload/v1702178592/Dock-Shoes-PNG-min_xcpfpg.png",
 	},
 	{
 		id: 4,
 		title: "clothes",
 		image_Url:
-			"https://www.pngmart.com/files/22/Crewneck-Or-Classic-T-Shirt-PNG-Isolated-File.png",
+			"https://res.cloudinary.com/queentech/image/upload/v1702178592/Crewneck-Or-Classic-T-Shirt-PNG-Isolated-File-min_zuo2ib.png",
 	},
 	{
 		id: 5,
@@ -31,7 +33,8 @@ export const productCategories = [
 	{
 		id: 7,
 		title: "bags",
-		image_Url: "https://www.pngmart.com/files/1/Women-Bag-PNG-Image.png",
+		image_Url:
+			"https://res.cloudinary.com/queentech/image/upload/v1702178595/Women-Bag-PNG-Image-min_a97qon.png",
 	},
 	{
 		id: 8,
@@ -49,6 +52,6 @@ export const productCategories = [
 		id: 10,
 		title: "others",
 		image_Url:
-			"https://www.pngmart.com/files/13/Electrical-Items-Transparent-PNG.png",
+			"https://res.cloudinary.com/queentech/image/upload/v1702178593/Electrical-Items-Transparent-PNG-min_sijpqq.png",
 	},
 ]

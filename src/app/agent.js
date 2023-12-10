@@ -2,7 +2,7 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import router from "../router/router"
 
-axios.defaults.baseURL = "https://backend-brokang-youtube.vercel.app/api/v1"
+axios.defaults.baseURL = "http://localhost:4000/api/v1"
 
 const responseBody = (response) => response.data
 

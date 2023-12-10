@@ -1,33 +1,49 @@
+import { lazy, Suspense } from "react"
 import { createBrowserRouter } from "react-router-dom"
 import App from "../App"
-import HomePage from "../features/HomePage.jsx"
-import Login from "../features/login/Login.jsx"
-import Register from "../features/register/Register"
-import ActivationPage from "../features/activation/ActivationPage"
-import ForgotPassword from "../features/forgotPassword/ForgotPassword.jsx"
-import ResetPassword from "../features/resetPassword/ResetPassword"
-import ProfilePage from "../features/profile/ProfilePage"
+
+// import HomePage from "../features/HomePage.jsx"
+
 import ProtectedRoutes from "./ProtectedRoutes"
-import ProductDetails from "../features/productDetails/ProductDetails"
-import SellProducts from "../features/sell/SellProducts"
-import EditProducts from "../features/sell/EditProducts"
-import Search from "../features/search/Search.jsx"
-import MyStore from "../features/store/MyStore.jsx"
-import Follow from "../features/follow/Follow.jsx"
-import Follower from "../features/follow/Follower.jsx"
-import Following from "../features/follow/Following.jsx"
-import Seller from "../features/seller/Seller.jsx"
-import Address from "../features/address/Address.jsx"
-import Checkout from "../features/checkout/Checkout.jsx"
-import Payment from "../features/payment/Payment.jsx"
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements } from "@stripe/react-stripe-js"
-import Success from "../features/payment/Success.jsx"
-import OrderList from "../features/order/OrderList.jsx"
-import OrderDetails from "../features/order/OrderDetails.jsx"
-import PaymentManagement from "../features/paymentManagement/PaymentManagement.jsx"
-import Chat from "../features/chat/Chat.jsx"
-import NotFound from "../components/NotFound.jsx"
+import Spinner from "../components/Spinner.jsx"
+
+const OrderList = lazy(() => import("../features/order/OrderList.jsx"))
+const Address = lazy(() => import("../features/address/Address.jsx"))
+const ResetPassword = lazy(() =>
+	import("../features/resetPassword/ResetPassword")
+)
+const ActivationPage = lazy(() =>
+	import("../features/activation/ActivationPage")
+)
+const ProductDetails = lazy(() =>
+	import("../features/productDetails/ProductDetails")
+)
+const Search = lazy(() => import("../features/search/Search.jsx"))
+const Register = lazy(() => import("../features/register/Register"))
+const Login = lazy(() => import("../features/login/Login.jsx"))
+const ProfilePage = lazy(() => import("../features/profile/ProfilePage"))
+const SellProducts = lazy(() => import("../features/sell/SellProducts"))
+const EditProducts = lazy(() => import("../features/sell/EditProducts"))
+const MyStore = lazy(() => import("../features/store/MyStore.jsx"))
+const Follow = lazy(() => import("../features/follow/Follow.jsx"))
+const Follower = lazy(() => import("../features/follow/Follower.jsx"))
+const Following = lazy(() => import("../features/follow/Following.jsx"))
+const Checkout = lazy(() => import("../features/checkout/Checkout.jsx"))
+const Success = lazy(() => import("../features/payment/Success.jsx"))
+const Payment = lazy(() => import("../features/payment/Payment.jsx"))
+const Seller = lazy(() => import("../features/seller/Seller.jsx"))
+const OrderDetails = lazy(() => import("../features/order/OrderDetails.jsx"))
+const Chat = lazy(() => import("../features/chat/Chat.jsx"))
+const PaymentManagement = lazy(() =>
+	import("../features/paymentManagement/PaymentManagement.jsx")
+)
+const NotFound = lazy(() => import("../components/NotFound.jsx"))
+const ForgotPassword = lazy(() =>
+	import("../features/forgotPassword/ForgotPassword.jsx")
+)
+const HomePage = lazy(() => import("../features/HomePage.jsx"))
 
 const stripeKey = import.meta.env.VITE_PUBLISHABLE_KEY
 
@@ -36,7 +52,11 @@ const stripePromise = loadStripe(stripeKey)
 export const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <App />,
+		element: (
+			<Suspense fallback={<Spinner />}>
+				<App />
+			</Suspense>
+		),
 		children: [
 			{
 				element: <ProtectedRoutes />,
